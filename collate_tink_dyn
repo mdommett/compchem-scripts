@@ -1,0 +1,32 @@
+#!/bin/bash 
+
+echo "How many output geometries are present?"
+
+read tot
+
+printf "What is prefix to the output of the dynamics? e.g 'dynamics'.001\n" 
+
+read name
+
+for i in $(seq 1 $tot);
+do
+printf "Working on $i\n"
+
+if [ $i -lt 10 ];
+then
+sed '2d' $name.00$i > $name.a.00$i
+tinker2xyz $name.a.00$i oplsaa.prm;
+
+elif [ $i -ge 10  -a $i -lt 100 ];
+then
+sed '2d' $name.0$i > $name.a.0$i
+tinker2xyz $name.a.0$i oplsaa.prm;
+
+else 
+sed '2d' $name.$i > $name.a.$i
+tinker2xyz $name.a.$i oplsaa.prm;
+
+fi
+done
+
+cat $name.a.*.xyz > geoms.xyz

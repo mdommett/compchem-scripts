@@ -1,0 +1,11 @@
+#!/usr/bin/perl -w
+
+my @trajs=(1, 6, 5, 11, 18, 8, 3, 7, 17, 20, 15, 9, 12, 4, 10, 19, 29, 14, 21);
+
+foreach $traj(@trajs){
+ 	print "TRAJ$traj\n";	
+	chdir ("TRAJ$traj/RESULTS/");
+	system("dynout2xyz.pl");
+	chdir ("../../");
+}
+

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+echo "How many calculations are in the scan?"
+read calcmax
+for i  in $(seq 1 $calcmax)  
+do
+mkdir $i
+cp *  $i/
+done
+
+

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+echo "How many calculations are in the scan?"
+read calcmax
+for i  in $(seq 1 $calcmax)  
+do
+cd $i
+grep "Total Energy" job.last >> ../energies.txt
+t2x coord >> ../geoms.xyz
+cd ../
+done
+
+

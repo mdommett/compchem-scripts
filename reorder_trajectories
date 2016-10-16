@@ -1,0 +1,18 @@
+#!/bin/bash
+
+trajs=(1 2 4 6 7 8 9 10 14 18 20 21 22 24 26 27 29 30)
+
+
+count=13
+
+##mkdir TRAJ_reordered
+
+for traj in "${trajs[@]}"
+do
+
+cp -r TRAJ$traj TRAJ_reordered/TRAJ$count
+
+let count=count+1
+
+done
+ 

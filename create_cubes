@@ -1,0 +1,18 @@
+#!/bin/bash
+
+directories=(s2 s3)
+files=(H_dimer1_dcm H_dimer1_hex)
+
+for i in "${directories[@]}"
+do
+
+	cd $i
+	for j in "${files[@]}"
+	do
+		formchk "$j.chk" "$j.fchk"
+		cubegen "2" "density=SCF" $j.fchk $j-s0.cub 
+		cubegen "2" "density=CI" $j.fchk $j-$i.cub
+	done
+	cd ../
+done
+

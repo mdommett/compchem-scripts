@@ -1,0 +1,13 @@
+#!/bin/bash
+
+count=1
+
+while $count<13:
+do
+
+cp -r TRAJ$traj TRAJ_reordered/TRAJ$count
+
+let count=count+1
+
+done
+ 
