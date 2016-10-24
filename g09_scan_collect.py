@@ -29,11 +29,23 @@ for i in scf:
         s1_au.append(scf[count-1])
     count +=1
     
+min_au = float(min(s0_au))
+
+s0_ev = []
+s1_ev = []
+
+for i in s0_au:
+    ev = (float(i)-min_au)*27.2114
+    s0_ev.append(ev)
+for i in s1_au:
+    ev = (float(i)-min_au)*27.2114
+    s1_ev.append(ev)
+
 x = range(1,len(s0_au)+1)
 
 fig,ax = plt.subplots()
-plt.plot(x,s0_au,'o-b',linewidth=2)
-plt.plot(x,s1_au,'o-r',linewidth=2)
+plt.plot(x,s0_ev,'o-b',linewidth=2)
+plt.plot(x,s1_ev,'o-r',linewidth=2)
 ax.spines['right'].set_visible(False)
 ax.spines['top'].set_visible(False)
 ax.spines['left'].set_linewidth(1.5)
@@ -43,5 +55,5 @@ ax.yaxis.set_ticks_position('left')
 ax.xaxis.set_tick_params(labelsize=12, width=1.5)
 ax.yaxis.set_tick_params(labelsize=12, width=1.5)
 plt.xlabel('X', fontsize=12)
-plt.ylabel('Energy (au)', fontsize=12)
+plt.ylabel('Energy (eV)', fontsize=12)
 plt.show()
