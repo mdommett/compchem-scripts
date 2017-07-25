@@ -7,27 +7,60 @@ import numpy as np
 """ This script assigns forcefield atom types to a testfile,
 based on a template file. The template file must have atom
 types already assigned, and be in the tinker xyz format.
+The tinker format allows for connectivities to be used.
 The script reads the template and assigns each atom a vector, 
-based on the atom's connectivities. Each vector is added to by
-connectivities which are 1,2,3 etc bonds away,until each atom
-type can be uniquely described by a vector.
+based on the atom's connectivities. The vector is made up of a 
+count for each element in alphabetical order. 
+The first vector also includes the base element (the one from which you
+are tracking connectivites). 
+Each vector is added to by connectivities which are 1,2,3 etc bonds away,until 
+each atom type can be uniquely described by a vector.
+
 The testfile is then read and vectors are created for each atom.
 When a vector in the testfile matches the template, the testfile 
-atom is assigned the corresponding template atom type.""" 
-#Michael Dommett June 2016
-####
+atom is assigned the corresponding template atom type.
+
+Example : Methane, CH2Cl2
+
+Base elements : C(x1), Cl (x2), H(x2)
+Vector = [number of Cs, number of Cls, number of Hs]
+
+Initial vector for C = [122]
+Initial vector for each Cl = [110]
+Initial vector for each H = [101] 
+
+
+Remember that for the first vector, the base element is also included.
+
+Often, higher order vectors must be generated, where atoms further away
+must be included. The program will loop through connections until a unique 
+description for atoms of different type can be identified. 
+
+Important to note: two atoms which are indistinguishable by connectivity but
+have different atom types will, of course, not be impossible to assign. 
+
+Enjoy!
+Michael Dommett 
+m.dommett@qmul.ac.uk
+June 2016
+""" 
+
+
+
+
+###
 # Usage: assign_tinker_atom_types.py template.xyz testfile.xyz outfile.xyz
 ###
 print "\n--- Starting Job ---\n"
 
-# 1) import template, read, save, get atom number
+# 1) import template, read, save, get number of atoms
 
 template = open(argv[1],"r").read().splitlines()
 split_template = (template[0]).split()
 natoms_template = int(split_template[0])
 
 
-# 2) import testfile, read, save, get atom number
+# 2) import testfile, read, save, get number of atoms
 
 testfile = open(argv[2],"r").read().splitlines()
 split_testfile = (testfile[0]).split()
@@ -63,7 +96,9 @@ def gen_1_connections(file_type,atoms,output_numbs,output_symbs,vector_dict):
         columns = line.split()
         col_len = len(columns)
         atom_no = int(columns[0])
-
+        atom_type1 = str(columns[1])
+        output_numbs[atom_no].append(atom_no)
+        output_symbs[atom_no].append(atom_type1)
         for con_a in columns[6:col_len]: 
             con_a = int(con_a)
             output_numbs[atom_no].append(con_a)
@@ -71,11 +106,13 @@ def gen_1_connections(file_type,atoms,output_numbs,output_symbs,vector_dict):
             con_line_split = file_type[con_line].split()
             con_symb = str(con_line_split[1])
             output_symbs[atom_no].append(con_symb)
-
+  
+    return
 # Create a vector for each atom based on the atoms to which it is connected
 def vector_dictionary(output_symbs,vector_dict):
     
     for atom in atoms: 
+
         atom = str(atom)
         count = 0
         for atom_no, atmsymb in output_symbs.items():
@@ -123,7 +160,6 @@ def check_vector(template,vector_dict):
                 if atom1_type != atom2_type:
                     a.append(atom_no)
                     equiv_atoms.update(a)
-    
 
     if equiv_atoms:
         return True
@@ -159,8 +195,8 @@ def print_output(atom_no_dictionary,atom_type_dictionary,testfile):
                 col = testfile[atom_no].split()
                 outfile.write( "{0:>4} {1:>4} {2:12.6f} {3:12.6f} {4:12.6f} {5:>6}".format(int(col[0]),col[1],float(col[2]),float(col[3]),float(col[4]),atom_type))
                 for i in col[6:(len(col))-1]:
-                    outfile.write( "{0:>3} ".format(int(i)))
-                outfile.write( "{0:>3}\n".format(int(col[-1])))
+                    outfile.write( "{0:>5} ".format(int(i)))
+                outfile.write( "{0:>5}\n".format(int(col[-1])))
     print "---Done---\n"
     return
 
@@ -200,7 +236,7 @@ else:
 connections_template = 1
 while check_vector(template,vector_dict):
     connections_template += 1
-    print "Atom types are not unique, generating connectivity type: {0} for template file \n...".format(connections_template)
+    print "Atom types are not unique, generating connectivity order: {0} for template file \n...".format(connections_template)
     input_numbs = output_numbs
     input_symbs = output_symbs
     output_numbs = defaultdict(list)
