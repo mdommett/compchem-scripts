@@ -42,6 +42,15 @@ for i in s1_au:
     ev = (float(i)-min_au)*27.2114
     s1_ev.append(ev)
 
+#outfile.write(" s0       s1\n")
+
+count=0
+for i in s0_ev:
+    outfile.write("{0:2.3f}    {1:2.3f}  \n".format(i,s1_ev[count]))
+    count+=1
+
+
+
 x = range(1,len(s0_au)+1)
 
 plotgraph = raw_input("\nDo you want to plot a graph? Yes/No : ")
@@ -49,8 +58,8 @@ plotgraph = raw_input("\nDo you want to plot a graph? Yes/No : ")
 if plotgraph=="Yes":
 
     fig,ax = plt.subplots()
-    plt.plot(x,s0_ev,'o-b',linewidth=2)
-    plt.plot(x,s1_ev,'o-r',linewidth=2)
+    ax.plot(x,s0_ev,'o-b',linewidth=2)
+    ax.plot(x,s1_ev,'o-r',linewidth=2)
     #ax.spines['right'].set_visible(False)
     #ax.spines['top'].set_visible(False)
     #ax.spines['left'].set_linewidth(1.5)
@@ -68,9 +77,3 @@ elif plotgraph=="No":
 else:
     print "\nI did not understand your answer. Please enter 'Yes' or 'No'\n"
     
-outfile.write(" s0       s1\n")
-
-count=0
-for i in s0_ev:
-    outfile.write("{0:2.3f}    {1:2.3f}  \n".format(i,s1_ev[count]))
-    count+=1
