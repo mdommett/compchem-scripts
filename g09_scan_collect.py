@@ -1,11 +1,16 @@
 #!/usr/bin/env python
 
+# Script to extract the energies from an opt=modredundant Gaussian 09 scan
+# job
+
 import matplotlib.pyplot as plt
 import numpy as np
 from sys import argv
 
+# Input and output files
 infile = open(argv[1],"r").read().splitlines()
 outfile = open("energies_"+argv[1],"w")
+
 scf = []
 for line in infile:
     split_line = line.split()
@@ -24,12 +29,12 @@ count = 0
 s0_au = []
 s1_au = []
 
-for i in scf:    
+for i in scf:
     if isinstance(i, basestring):
         s0_au.append(scf[count-2])
         s1_au.append(scf[count-1])
     count +=1
-    
+
 min_au = float(min(s0_au))
 
 s0_ev = []
@@ -71,9 +76,8 @@ if plotgraph=="Yes":
     plt.xlabel('X', fontsize=12)
     plt.ylabel('Energy (eV)', fontsize=12)
     plt.show()
-    
+
 elif plotgraph=="No":
     print "\nOkay, I will just print the energies\n"
 else:
     print "\nI did not understand your answer. Please enter 'Yes' or 'No'\n"
-    
