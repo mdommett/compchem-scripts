@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
+# Script to read and then  plot the spin density from a g09 output. 
+
 import numpy as np
-from itertools import chain
 from sys import argv,exit
 from periodic import element
 import matplotlib.pyplot as plt

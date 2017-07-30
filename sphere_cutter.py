@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# Takes an xyz of a supercell and cuts a sphere of atoms. Options defined in the molecule file. I should edit this to use argparser instead. The centre of mass is used as the start position
+
 import numpy as np
 from itertools import chain
 from sys import argv

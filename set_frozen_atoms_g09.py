@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# assigns frozen atoms (g09) by adding a -1. Not very useful, easier to just use vim
+
 from sys import argv
 
 inputfile = open(argv[1],"r").read().splitlines()

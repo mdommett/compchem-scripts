@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-from sys import argv,exit
+# script in the ONIOM preparation process. Takes a set of atom types (AMBER), charges, and an xyz file, and writes out the gaussian-style atomtype-charge x y z file 
+
+from sys import argv
 
 atomtypes =  open(argv[1],"r:").read().splitlines()
 charges = open(argv[2],"r:").read().splitlines()
