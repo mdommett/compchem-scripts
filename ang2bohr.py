@@ -7,7 +7,7 @@ ang2bohr=1.88973
 infile=open(argv[1],"r").read().splitlines()
 outfile=open(argv[1]+"-bohr","w")
 
-for i in infile[:3]:
+for i in infile[:2]:
     outfile.write("{}\n".format(i))
 for i in infile[2:]:
     ix=i.split()
