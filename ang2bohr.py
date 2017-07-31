@@ -3,7 +3,7 @@ from datetime import datetime
 startTime = datetime.now()
 import numpy as np
 from sys import argv
-ang2bohr=1.88973
+ang2bohr=1.8897259886
 infile=open(argv[1],"r").read().splitlines()
 outfile=open(argv[1]+"-bohr","w")
 
