@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 from sys import argv,exit
-from periodic import element
 import matplotlib.pyplot as plt
 from datetime import datetime
 startTime = datetime.now()
