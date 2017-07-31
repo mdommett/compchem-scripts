@@ -7,7 +7,7 @@ from datetime import datetime
 startTime = datetime.now()
 
 finp = open(argv[1],"r").read().splitlines()
-fout = open(argv[1]+"test","w")
+fout = open(argv[1]+"-energies","w")
 
 lines = filter(None, (line.rstrip() for line in finp))
 hold_scf=[]
