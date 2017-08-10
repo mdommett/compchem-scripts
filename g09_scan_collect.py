@@ -3,7 +3,6 @@
 from sys import argv,exit
 import argparse
 from periodic import element
-
 """
 Parse the output of a Gaussian 09 relaxed geometry scan job
 
@@ -84,15 +83,14 @@ def save_geometries(infile):
         if j == " Number     Number       Type             X           Y           Z":
             hold_geom=[]
             count = int(i)
-            for line in lines[count+2:count+natoms+2]:
-                splt = line.split()
-                coords=(element(splt[1]).symbol,float(splt[3]),float(splt[4]),float(splt[5]))
-                hold_geom.append(coords)
+            hold_geom.append(lines[count+2:count+natoms+2])
         if j==" Optimization completed.":
             fgeom.write("{}\n\n".format(natoms))
-            for line in hold_geom:
-                symbol,x,y,z=line
-                fgeom.write("{0:<2} {1:>13.9f} {2:>13.9f} {3:>13.9f}\n".format(symbol,x,y,z))
+            for geom in hold_geom:
+                for line in geom:
+                    splt = line.split()
+                    symbol,x,y,z=(element(splt[1]).symbol,float(splt[3]),float(splt[4]),float(splt[5]))
+                    fgeom.write("{0:<2} {1:>13.9f} {2:>13.9f} {3:>13.9f}\n".format(symbol,x,y,z))
     return
 
 def plot_energies(scf_final,s1_final):
