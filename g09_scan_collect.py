@@ -74,7 +74,6 @@ def save_geometries(infile):
     """
     print "Saving each optimised geometry to {} ...\n".format(args.input+"-opt.xyz")
     fgeom=open(args.input+"-opt.xyz","w")
-    hold_geom=[]
     for i,j in enumerate(infile):
         if j.split()[0]=="NAtoms=":
             natoms=int(j.split()[3])
