@@ -113,7 +113,8 @@ def plot_energies(scf_final,s1_final):
     ax.plot(x,s1_final,'o-r',linewidth=2)
     plt.xlabel('Step Number', fontsize=12)
     plt.ylabel('Energy (eV)', fontsize=12)
-    return plt.show()
+    #plt.show()
+    return
 
 
 if __name__=='__main__':
@@ -136,3 +137,4 @@ if __name__=='__main__':
 if args.plot:
     import matplotlib.pyplot as plt
     plot_energies(scf_final,s1_final)
+    plt.show()

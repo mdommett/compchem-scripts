@@ -119,7 +119,7 @@ distances = defaultdict(list)
 # Populate dictionary
 
 com=centre_of_mass(ref_atoms)
-
+com_chosen=centre_of_mass(cluster_atoms)
 for atom in [int(l) for l in cluster_atoms if xyz[1+l].split()[0] in atoms_to_search]:
     distances[(atom,xyz[1+atom].split()[0])] =(vector_distance(com+get_coordinates(xyz[1+atom])))
     
@@ -129,3 +129,4 @@ d_view.sort(reverse=True)
 for v,k in d_view:
     print "C.O.M - {0} ({1}) : {2:.3f}".format(k[0],k[1],v)
 print "C.O.M: {} {} {}".format(com[0],com[1],com[2])
+print "\nC.O.M ref to C.O.M cluster:\n\n= {}".format(vector_distance(tuple(com+com_chosen)))
