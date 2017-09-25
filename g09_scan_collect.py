@@ -20,7 +20,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-i","--input",required=True,help="Log file of Gaussian 09 scan")
 parser.add_argument("-xyz","--xyz",help="Save the optimised geometries in xyz format",action="store_true")
 parser.add_argument("-p","--plot",help="Plot a graph of the energies",action="store_true")
-parser.add_argument("-s","--states",help="Eletronic state numbers calculated in scan. Default=2",required=True,type=int)
+parser.add_argument("-n","--nstates",help="Number of electronic calculated in scan. Default=2",required=True,type=int,default=2)
 args=parser.parse_args()
 
 def read_energies(infile,state):
@@ -128,27 +128,28 @@ if __name__=='__main__':
     lines = filter(None, (line.rstrip() for line in finp))
 
 
-    if args.states==2:
+    if args.nstates==2:
         scf=read_energies(lines,0)
         scf_final=[(i-scf[0])*27.2114 for i in scf]
         s1=read_energies(lines,1)
         s1_final=[(i-scf[0])*27.2114 for i in s1]
 
-        print "Saving energies to {} ...\n".format(args.input+"-energies")
+        print "\n\nSaving energies to {} ...\n".format(args.input+"-energies")
         if len(scf_final)==len(s1_final):
             for i in range(len(scf_final)):
                 fen.write("{0:>2.3f}  {1:>2.3f}\n".format(scf_final[i],s1_final[i]))
         else:
-            sys.exit("\n\nCheck the G09 output file, there is a problem\n\n")
+            sys.exit("\n\nCheck the G09 output file, there is a problem with the electronic states\n\n")
 
-    if args.states==1:
+    if args.nstates==1:
         scf=read_energies(lines,0)
         scf_final=[(i-scf[0])*27.2114 for i in scf]
+        print "\n\nSaving energies to {} ...\n".format(args.input+"-energies")
         for i in range(len(scf_final)):
             fen.write("{0:>2.3f}\n".format(scf_final[i]))
 
 
-    if args.states>2:
+    if args.nstates>2:
         exit("Only states 2 states are implemented at this time.")
 
 
@@ -158,7 +159,7 @@ if __name__=='__main__':
     if args.plot:
         import matplotlib.pyplot as plt
         fig,ax = plt.subplots()
-        if args.states==2:
+        if args.nstates==2:
             plot_energies(scf_final,0)
             plot_energies(s1_final,1)
         else:
