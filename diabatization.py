@@ -34,7 +34,6 @@ m.dommett@qmul.ac.uk
 """
 import numpy as np
 from sys import argv
-import pandas as pd
 
 def get_tdm(file,state):
     for linenumber,line in enumerate(file):
