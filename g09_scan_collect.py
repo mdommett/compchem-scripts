@@ -20,7 +20,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-i","--input",required=True,help="Log file of Gaussian 09 scan")
 parser.add_argument("-xyz","--xyz",help="Save the optimised geometries in xyz format",action="store_true")
 parser.add_argument("-p","--plot",help="Plot a graph of the energies",action="store_true")
-parser.add_argument("-n","--nstates",help="Number of electronic calculated in scan. Default=2",required=True,type=int,default=2)
+parser.add_argument("-n","--nstates",help="Number of electronic calculated in scan. Default=2",type=int,default=2)
 args=parser.parse_args()
 
 def read_energies(infile,state):
@@ -117,6 +117,7 @@ def plot_energies(energies,state):
         ax.plot(x,energies,'o-r',linewidth=2)
     plt.xlabel('Step Number', fontsize=12)
     plt.ylabel('Energy (eV)', fontsize=12)
+    plt.title(args.input)
     #plt.show()
     return
 
