@@ -163,20 +163,20 @@ def diabatize(dims1,dims2,monA,monB,E1,E2):
 if __name__=='__main__':
     if args.property.upper()=="TDM":
         if len(args.input)==3:
-            dimer=open(argv[1],"r").read().splitlines()
-            monA=open(argv[2],"r").read().splitlines()
-            monB=open(argv[3],"r").read().splitlines()
+            dimer=open(args.input[0],"r").read().splitlines()
+            monA=open(args.input[1],"r").read().splitlines()
+            monB=open(args.input[2],"r").read().splitlines()
 
             # Dimer data (s1 and s2)
-            TDMs1=get_tdm(dimer,1)
-            TDMs2=get_tdm(dimer,3)
+            TDMs1=get_TDM(dimer,1)
+            TDMs2=get_TDM(dimer,2)
             Es1=get_energy(dimer,1)
-            Es2=get_energy(dimer,3)
+            Es2=get_energy(dimer,2)
 
             # Monomer data (s1)
-            tdmA=get_tdm(monA,1)
-            tdmB=get_tdm(monB,1)
-            H=diabatize(TDMs1,TDMs2,tdmA,tdmB,Es1,Es2)
+            TDMA=get_TDM(monA,1)
+            TDMB=get_TDM(monB,1)
+            H=diabatize(TDMs1,TDMs2,TDMA,TDMB,Es1,Es2)
             J=H[0,1]
             print "Diabatic Hamiltonian H:\n{}\n".format(H)
             print "J = {:.3f} eV".format(J)
