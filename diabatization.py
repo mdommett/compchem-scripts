@@ -48,7 +48,7 @@ The atom numbers must all match for the monomers and dimers.
 Enjoy
 
 Michael Dommett
-June 2017
+Septmber 2017
 m.dommett@qmul.ac.uk
 ----------------
 """
