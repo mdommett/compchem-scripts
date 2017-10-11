@@ -72,5 +72,8 @@ for ref in x:
 if args.gnu:
     gnu_plot(x,sum)
 
-if args.mpl:
-    mpl_plot(x,sum)
+elif args.mpl:
+    mpl_plot(x,sum
+
+else:
+    "Please specify -mpl or -gnu to plot with matplotlib or gnuplot"
