@@ -76,4 +76,4 @@ elif args.mpl:
     mpl_plot(x,sum)
 
 else:
-    sytem.exit("Please specify -mpl or -gnu to plot with matplotlib or gnuplot")
+    system.exit("Please specify -mpl or -gnu to plot with matplotlib or gnuplot")
