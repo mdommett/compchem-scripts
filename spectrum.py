@@ -73,7 +73,7 @@ if args.gnu:
     gnu_plot(x,sum)
 
 elif args.mpl:
-    mpl_plot(x,sum
+    mpl_plot(x,sum)
 
 else:
     sytem.exit("Please specify -mpl or -gnu to plot with matplotlib or gnuplot")
