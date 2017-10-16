@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Script to read and then  plot the spin density from a g09 output. 
+# Script to read and then  plot the spin density from a g09 output.
 
 import numpy as np
 from sys import argv,exit
@@ -44,5 +44,9 @@ if alphasymbol==betasymbol and alphanumber==betanumber:
 else:
     sys.exit("Error")
 
-plt.plot(alphanumber,density)
+fig,ax=plt.subplots()
+ax.set_title(str(argv[1]))
+ax.set_xlabel("Atom Number")
+ax.set_ylabel("Spin density")
+ax.plot(alphanumber,density)
 plt.show()
