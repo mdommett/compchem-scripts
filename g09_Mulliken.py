@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 import numpy as np
 from itertools import chain
 from sys import argv
@@ -10,28 +9,25 @@ infile = open(argv[1],"r").read().splitlines()
 
 for line in infile:
 	if "NAtoms=" in line:
-		natoms = int(line.split()[1])
+		natoms = int(line.split()[3])
 		break
 
 def get_charges(inputfile,natoms):
 
-    q = []
+	q = []
+	count= []
+	for linenumber,line in enumerate(infile):
+		if line == " Mulliken charges:":
+			count.append(int(linenumber))
+	for line in count:
+	
+		charges = [i.split() for i in infile[(line+2):(line+2+natoms)]]
+		q.append(charges)
+		
+	return q
 
-    for i,j in enumerate(infile):
-        if j == " Mulliken charges:":
-            count = int(i)
-            break
-    charges = infile[(count+2):(count+2+natoms)]
-    summed = infile[count+natoms+2].split()
-    for line in charges:
-        line_charge= line.split()
-        q.append(float(line_charge[2]))
-    sumd=0
-    for i in q:
-        sumd +=float(i)
-    return q
+mulliken_charges = (get_charges(infile,natoms))
 
-charges = (get_charges(infile,natoms))
-
-for i in charges:
-	print "{:>9.6f}".format(i)
+for set in range(len(mulliken_charges)):
+	for line in mulliken_charges[set]:
+		print "{0:<2}  {1:>3}  {2:>8.5f}".format(int(line[0]), str(line[1]), float(line[2]))
