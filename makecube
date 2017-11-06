@@ -1,0 +1,5 @@
+#!/bin/bash 
+formchk -ms $1.chk $1.fchk
+cubegen 2 density=scf $1.fchk $1-GS.cub 220
+cubegen 2 density=ci $1.fchk $1-ES.cub 220
+
