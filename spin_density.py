@@ -58,6 +58,8 @@ if args.type=="NBO":
         ax.set_xlabel("Atom Number")
         ax.set_ylabel("Spin density")
         ax.bar(alphanumber,density)
+        plt.savefig(str(args.input)[:-4])+"_spindensity.pdf"
+        plt.show()
 else:
     infile = open(args.input,"r").read().splitlines()
     for linenumber,line in enumerate(infile):
@@ -74,4 +76,5 @@ else:
         ax.set_xlabel("Atom Number")
         ax.set_ylabel("Spin density")
         ax.bar(range(len(spindensities)),spindensities)
+        plt.savefig(str(args.input)[:-4])+"_spindensity.pdf"
         plt.show()
