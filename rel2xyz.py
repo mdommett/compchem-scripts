@@ -6,10 +6,9 @@ import handle_atoms as ha
 import numpy as np
 
 QE_f = sys.argv[1]
-atoms=rf.read_qe(QE_f)
+atoms=rf.read_xyz(QE_f)[-1]
 ef.write_xyz(QE_f[:-4]+"-opt.xyz",atoms)
 
 vectors=np.loadtxt("vectors")
 mega=ha.make_mega_cell(atoms,1,1,1,vectors)
 ef.write_xyz(QE_f[:-4]+"-mega.xyz",mega)
-
