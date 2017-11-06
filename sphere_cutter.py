@@ -86,6 +86,7 @@ if outfile_answer == "Y":
     for i in sphere_atoms:
         outfile.write("{}".format(xyz[1+i]))
 
+"""
 comfile=open(argv[2],'r').readlines()
 com_new=open(argv[2]+"_new","w")
 
@@ -94,4 +95,4 @@ for i in range(len(comfile)):
         com_new.write("{}".format(comfile[i-1]))
     else:
         line = comfile[i-1].split()
-        com_new.write("{0:<2}  0 {1:>13.9f} {2:>13.9f} {3:>13.9f} {4}\n".format(line[0],float(line[2]),float(line[3]),float(line[4]),line[5]))
+        com_new.write("{0:<2}  0 {1:>13.9f} {2:>13.9f} {3:>13.9f} {4}\n".format(line[0],float(line[2]),float(line[3]),float(line[4]),line[5]))"""
