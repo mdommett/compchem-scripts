@@ -2,9 +2,6 @@
 
 import sys
 import read_file as rf
-import edit_file as ef
-import handle_atoms as ha
-import numpy as np
 
 atoms = rf.read_xyz(sys.argv[1])[-1]
 outfile = open(sys.argv[1][:-4]+".com","w")
