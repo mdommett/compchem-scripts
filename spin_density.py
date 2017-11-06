@@ -57,7 +57,7 @@ if args.type=="NBO":
         ax.set_title(args.input[:-4])
         ax.set_xlabel("Atom Number")
         ax.set_ylabel("Spin density")
-        ax.plot(alphanumber,density)
+        ax.bar(alphanumber,density)
 else:
     infile = open(args.input,"r").read().splitlines()
     for linenumber,line in enumerate(infile):
@@ -69,9 +69,9 @@ else:
     spindensities=[float(i.split()[3]) for i in infile[start:stop]]
 
     if args.plot:
-        ig,ax=plt.subplots()
+        fig,ax=plt.subplots()
         ax.set_title(args.input[:-4])
         ax.set_xlabel("Atom Number")
         ax.set_ylabel("Spin density")
-        ax.plot(range(len(spindensities)),spindensities)
+        ax.bar(range(len(spindensities)),spindensities)
         plt.show()
