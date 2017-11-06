@@ -76,5 +76,5 @@ else:
         ax.set_xlabel("Atom Number")
         ax.set_ylabel("Spin density")
         ax.bar(range(len(spindensities)),spindensities)
-        plt.savefig(str(args.input)[:-4])+"_spindensity.pdf"
+        plt.savefig(str(args.input[:-4])+"_spindensity.pdf")
         plt.show()
