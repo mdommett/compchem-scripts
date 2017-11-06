@@ -1,0 +1,4 @@
+#!/bin/bash 
+formchk -ms $1.chk $1.fchk
+cubegen 2 Spin $1.fchk $1-spindensity.cub 220
+
