@@ -4,7 +4,6 @@
 
 import numpy as np
 from sys import argv,exit
-from periodic import element
 import matplotlib.pyplot as plt
 import argparse
 
