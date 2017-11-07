@@ -62,7 +62,8 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-p","--property",help="[TDM] Transition Dipole Moments [TDM] or [ATC] Atomic Transition Charges",default="TDM")
-parser.add_argument("-s","--states",help="Excited states to read ", nargs=2, default=[1,2])
+parser.add_argument("-ms","--monstate",help="Excited state to use for the monomer", default=1)
+parser.add_argument("-ds","--dimstates",help="Excited states to use for the dimer ", nargs=2, default=[1,2])
 parser.add_argument("-i","--input",required=True,help="Input files. ",nargs='*')
 args=parser.parse_args()
 
@@ -171,14 +172,14 @@ if __name__=='__main__':
             monB=open(args.input[2],"r").read().splitlines()
 
             # Dimer data (s1 and s2)
-            TDMs1=get_TDM(dimer,args.states[0])
-            TDMs2=get_TDM(dimer,args.states[1])
-            Es1=get_energy(dimer,args.states[0])
-            Es2=get_energy(dimer,args.states[1])
+            TDMs1=get_TDM(dimer,args.dimstates[0])
+            TDMs2=get_TDM(dimer,args.dimstates[1])
+            Es1=get_energy(dimer,args.dimstates[0])
+            Es2=get_energy(dimer,args.dimstates[1])
 
             # Monomer data (s1)
-            TDMA=get_TDM(monA,args.states[0])
-            TDMB=get_TDM(monB,args.states[0])
+            TDMA=get_TDM(monA,args.monstate)
+            TDMB=get_TDM(monB,args.monstate)
             H=diabatize(TDMs1,TDMs2,TDMA,TDMB,Es1,Es2)
             J=H[0,1]
             print "Diabatic Hamiltonian H:\n{}\n".format(H)
@@ -194,8 +195,8 @@ if __name__=='__main__':
             monB=open(args.input[3],"r").read().splitlines()
             dimer=open(args.input[4],"r").read().splitlines()
 
-            E1=get_energy(dimer,args.states[0])
-            E2=get_energy(dimer,args.states[1])
+            E1=get_energy(dimer,args.dimstates[0])
+            E2=get_energy(dimer,args.dimstates[1])
 
             ATC_s1=get_ATC(dimer_s1)
             ATC_s2=get_ATC(dimer_s2)
