@@ -19,6 +19,8 @@ The diabatization scheme used herein is proposed by Troisi et. al PRL 114, 02640
     1. Transition diople moments (TDM)
     2. Atomic transtion charges (ATC)
 
+If no option is selected, the TDM scheme is used by default
+
 Usage:
 
 For TDM scheme:
@@ -59,7 +61,7 @@ import argparse
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-p","--property",required=True,help="[TDM] Transition Dipole Moments [TDM] or [ATC] Atomic Transition Charges")
+parser.add_argument("-p","--property",help="[TDM] Transition Dipole Moments [TDM] or [ATC] Atomic Transition Charges",default="TDM")
 parser.add_argument("-s","--states",help="Excited states to read ", nargs=2, default=[1,2])
 parser.add_argument("-i","--input",required=True,help="Input files. ",nargs='*')
 args=parser.parse_args()
