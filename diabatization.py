@@ -55,17 +55,10 @@ m.dommett@qmul.ac.uk
 ----------------
 """
 import numpy as np
-from sys import exit
+from sys import exit,argv
 from periodic import element
 import argparse
 
-
-parser = argparse.ArgumentParser()
-parser.add_argument("-p","--property",help="[TDM] Transition Dipole Moments [TDM] or [ATC] Atomic Transition Charges",default="TDM")
-parser.add_argument("-ms","--monstate",help="Excited state to use for the monomer", default=1)
-parser.add_argument("-ds","--dimstates",help="Excited states to use for the dimer ", nargs=2, default=[1,2])
-parser.add_argument("--input",help="Input files. ",nargs='*')
-args=parser.parse_args()
 
 def get_TDM(file,state):
     """
@@ -164,7 +157,16 @@ def diabatize(dims1,dims2,monA,monB,E1,E2):
     H=np.dot(np.dot(C,E),C.transpose())
 
     return H
+
 if __name__=='__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-p","--property",help="[TDM] Transition Dipole Moments [TDM] or [ATC] Atomic Transition Charges",default="TDM")
+    parser.add_argument("-ms","--monstate",help="Excited state to use for the monomer", default=1)
+    parser.add_argument("-ds","--dimstates",help="Excited states to use for the dimer ", nargs=2, default=[1,2])
+    parser.add_argument("input", help="Input files",type=str,nargs='*')
+    user_input = argv[1:]
+    args = parser.parse_args(user_input)
+
     if args.property.upper()=="TDM":
         if len(args.input)==3:
             dimer=open(args.input[0],"r").read().splitlines()
