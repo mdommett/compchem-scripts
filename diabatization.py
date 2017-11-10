@@ -25,7 +25,7 @@ Usage:
 
 For TDM scheme:
 
-./diabatization.py -p TDM -i dimer_file.out monomer-1.out monomer-2.out
+./diabatization.py -p TDM dimer_file.out monomer-1.out monomer-2.out
 
 The three G09 output files must be calculated with the "nosymm" option
 
@@ -35,7 +35,7 @@ must be calculated
 
 For the ATC scheme:
 
-./diabatization.py -p TDM -i dimer_s1.out dimer_s1.out monomer-1.out monomer-2.out dimer.out
+./diabatization.py -p ATC dimer_s1.out dimer_s1.out monomer-1.out monomer-2.out dimer.out
 
 dimer_s1 and dimer_s2 contains the Mulliken analysis for the s1 and s2 transitions in the dimer, achieved with:
 
