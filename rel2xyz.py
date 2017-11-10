@@ -6,7 +6,7 @@ import handle_atoms as ha
 import numpy as np
 
 QE_f = sys.argv[1]
-atoms=rf.read_xyz(QE_f)[-1]
+atoms=rf.read_qe(QE_f)
 ef.write_xyz(QE_f[:-4]+"-opt.xyz",atoms)
 
 vectors=np.loadtxt("vectors")
