@@ -64,7 +64,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-p","--property",help="[TDM] Transition Dipole Moments [TDM] or [ATC] Atomic Transition Charges",default="TDM")
 parser.add_argument("-ms","--monstate",help="Excited state to use for the monomer", default=1)
 parser.add_argument("-ds","--dimstates",help="Excited states to use for the dimer ", nargs=2, default=[1,2])
-parser.add_argument("--input",type=str,help="Input files. ",nargs='*')
+parser.add_argument("--input",help="Input files. ",nargs='*')
 args=parser.parse_args()
 
 def get_TDM(file,state):
