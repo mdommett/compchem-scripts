@@ -9,7 +9,7 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-t","--type",help="[Mull] Mulliken charges or [NBO] NBO charges", default="Mull")
-parser.add_argument("-i","--input",required=True,help="Input file")
+parser.add_argument("--input",type=str,help="Input file")
 parser.add_argument("-p","--plot",help="Plot output",action='store_true')
 args=parser.parse_args()
 

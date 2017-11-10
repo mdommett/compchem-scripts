@@ -17,7 +17,7 @@ m.dommett@qmul.ac.uk
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-i","--input",required=True,help="Log file of Gaussian 09 scan")
+parser.add_argument("--input",help="Log file of Gaussian 09 scan",type=str)
 parser.add_argument("-xyz","--xyz",help="Save the optimised geometries in xyz format",action="store_true")
 parser.add_argument("-p","--plot",help="Plot a graph of the energies",action="store_true")
 parser.add_argument("-n","--nstates",help="Number of electronic calculated in scan. Default=2",type=int,default=2)
