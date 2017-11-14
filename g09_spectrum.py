@@ -13,7 +13,7 @@ see http://gaussian.com/uvvisplot/ for implementation details
 
 """
 parser = argparse.ArgumentParser()
-parser.add_argument("--input",help="Log file of Gaussian 09 TD job", type=str)
+parser.add_argument("input",help="Log file of Gaussian 09 TD job", type=str)
 parser.add_argument("-gnu",help="Plot a spectrum using gnuplot",action="store_true")
 parser.add_argument("-mpl",help="Plot a spectrum using matplotlib",action="store_true")
 args=parser.parse_args()
