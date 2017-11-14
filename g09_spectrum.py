@@ -50,30 +50,34 @@ def gnu_plot(xaxis,yaxis):
     return
 
 def mpl_plot(xaxis,yaxis):
-    import matplotlib.pyplot as plt
     plt.scatter(xaxis,yaxis,s=5,c="r")
     plt.plot(xaxis,yaxis,color="k")
-    plt.show()
     return
 
 infile=open(args.input,"r").read().splitlines()
 energies,os_strengths=read_es(infile)
 
-x=np.linspace(max(energies)+100,min(energies)-100,1000)
+x=np.linspace(max(energies)+200,min(energies)-200,1000)
+
 sum=[]
-
-
 for ref in x:
     tot=0
     for i in range(len(energies)):
         tot+=abs_max(os_strengths[i],energies[i],ref)
     sum.append(tot)
 
+stick_intensities=[abs_max(os_strengths[i],energies[i],energies[i]) for i in range(len(energies))]
+
 if args.gnu:
     gnu_plot(x,sum)
 
 elif args.mpl:
+    import matplotlib.pyplot as plt
     mpl_plot(x,sum)
+    for i in range(len(energies)):
+        plt.plot((energies[i],energies[i]),(0,stick_intensities[i]),'-k')
+    plt.show()
+
 
 else:
     system.exit("Please specify -mpl or -gnu to plot with matplotlib or gnuplot")
