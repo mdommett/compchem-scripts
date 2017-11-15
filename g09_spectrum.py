@@ -83,4 +83,4 @@ elif args.mpl:
 
 
 else:
-    system.exit("Please specify -mpl or -gnu to plot with matplotlib or gnuplot")
+    exit("Please specify -mpl or -gnu to plot with matplotlib or gnuplot")
