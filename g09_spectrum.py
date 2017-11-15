@@ -6,7 +6,6 @@ from sys import argv
 from os import system
 import argparse
 #########
-sd=0.4  #standard deviation in eV
 #########
 """
 see http://gaussian.com/uvvisplot/ for implementation details
@@ -16,6 +15,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("input",help="Log file of Gaussian 09 TD job", type=str)
 parser.add_argument("-gnu",help="Plot a spectrum using gnuplot",action="store_true")
 parser.add_argument("-mpl",help="Plot a spectrum using matplotlib",action="store_true")
+parser.add_argument("-sd",help="Standard deviation (in eV)",default=0.4,type=float)
 args=parser.parse_args()
 
 def read_es(file):
@@ -30,7 +30,7 @@ def read_es(file):
 def abs_max(f,lam,ref):
     a=1.3062974e8
     b=f/(1e7/3099.6)
-    c=np.exp(-(((1/ref-1/lam)/(1/(1240/0.4)))**2))
+    c=np.exp(-(((1/ref-1/lam)/(1/(1240/args.sd)))**2))
     return a*b*c
 
 def gnu_plot(xaxis,yaxis):
@@ -50,8 +50,11 @@ def gnu_plot(xaxis,yaxis):
     return
 
 def mpl_plot(xaxis,yaxis):
-    plt.scatter(xaxis,yaxis,s=5,c="r")
+    plt.scatter(xaxis,yaxis,s=2,c="r")
     plt.plot(xaxis,yaxis,color="k")
+    plt.xlabel("Energy (nm)")
+    plt.ylabel("$\epsilon$ (L mol$^{-1}$ cm$^{-1}$)")
+    plt.title(args.input[:-4])
     return
 
 infile=open(args.input,"r").read().splitlines()
