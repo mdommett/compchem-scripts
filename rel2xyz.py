@@ -10,5 +10,5 @@ atoms=rf.read_qe(QE_f)
 ef.write_xyz(QE_f[:-4]+"-opt.xyz",atoms)
 
 vectors=np.loadtxt("vectors")
-mega=ha.make_mega_cell(atoms,1,1,1,vectors)
+mega=ha.make_mega_cell(atoms,3,3,3,vectors,alt_multi=True)
 ef.write_xyz(QE_f[:-4]+"-mega.xyz",mega)
