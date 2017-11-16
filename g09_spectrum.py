@@ -12,10 +12,13 @@ see http://gaussian.com/uvvisplot/ for implementation details
 
 """
 parser = argparse.ArgumentParser()
-parser.add_argument("input",help="Log file of Gaussian 09 TD job", type=str)
+parser.add_argument("input",help="Log file of Gaussian 09 TD job", type=str, nargs='*')
 parser.add_argument("-gnu",help="Plot a spectrum using gnuplot",action="store_true")
 parser.add_argument("-mpl",help="Plot a spectrum using matplotlib",action="store_true")
+parser.add_argument("-sticks",help="Plot the stick spectrum",action="store_true")
 parser.add_argument("-sd",help="Standard deviation (in eV)",default=0.4,type=float)
+parser.add_argument("-r",help="Min and max values for the spectrum (in nm)",nargs=2,type=int)
+parser.add_argument("-save",help="Save spectrum", type=str)
 args=parser.parse_args()
 
 def read_es(file):
@@ -54,33 +57,52 @@ def mpl_plot(xaxis,yaxis):
     plt.plot(xaxis,yaxis,color="k")
     plt.xlabel("Energy (nm)")
     plt.ylabel("$\epsilon$ (L mol$^{-1}$ cm$^{-1}$)")
-    plt.title(args.input[:-4])
     return
 
-infile=open(args.input,"r").read().splitlines()
-energies,os_strengths=read_es(infile)
-
-x=np.linspace(max(energies)+200,min(energies)-200,1000)
-
-sum=[]
-for ref in x:
-    tot=0
-    for i in range(len(energies)):
-        tot+=abs_max(os_strengths[i],energies[i],ref)
-    sum.append(tot)
-
-stick_intensities=[abs_max(os_strengths[i],energies[i],energies[i]) for i in range(len(energies))]
-
-if args.gnu:
-    gnu_plot(x,sum)
-
-elif args.mpl:
+colours=["red","blue","green","orange"]
+if args.mpl:
     import matplotlib.pyplot as plt
-    mpl_plot(x,sum)
-    for i in range(len(energies)):
-        plt.plot((energies[i],energies[i]),(0,stick_intensities[i]),'-k')
-    plt.show()
+    from matplotlib import colors as mcolors
+
+for n,f in enumerate(args.input):
+    infile=open(f,"r").read().splitlines()
+    energies,os_strengths=read_es(infile)
+
+    if args.r:
+        x=np.linspace(max(args.r),min(args.r),1000)
+
+    else:
+        x=np.linspace(max(energies)+200,min(energies)-200,1000)
+
+    sum=[]
+    for ref in x:
+        tot=0
+        for i in range(len(energies)):
+            tot+=abs_max(os_strengths[i],energies[i],ref)
+        sum.append(tot)
+
+    stick_intensities=[abs_max(os_strengths[i],energies[i],energies[i]) for i in range(len(energies))]
+
+    if args.gnu:
+        gnu_plot(x,sum)
+
+    elif args.mpl:
+        plt.scatter(x,sum,s=2,c=colours[n])
+        plt.plot(x,sum,color=colours[n],label=f)
+        plt.xlabel("Energy (nm)")
+        plt.ylabel("$\epsilon$ (L mol$^{-1}$ cm$^{-1}$)")
+        if args.sticks:
+            for i in range(len(energies)):
+                plt.plot((energies[i],energies[i]),(0,stick_intensities[i]),colours[n])
 
 
-else:
-    exit("Please specify -mpl or -gnu to plot with matplotlib or gnuplot")
+
+
+    else:
+        exit("Please specify -mpl or -gnu to plot with matplotlib or gnuplot")
+if args.r:
+    plt.xlim(min(args.r),max(args.r))
+plt.legend()
+if args.save:
+    plt.savefig(args.save+".pdf")
+plt.show()
