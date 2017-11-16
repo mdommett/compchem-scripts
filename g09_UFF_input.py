@@ -37,7 +37,7 @@ comfile = open(jobname+".com","w")
 chk = "%chk={0}.chk".format(jobname)
 nproc = "%nproc=4"
 mem = "%mem=28GB"
-input_line = "#p ONIOM(wb97xd/6-31Gc*UFF=QEq)=(EmbedCharge) nosymm"
+input_line = "#p ONIOM(wb97xd/6-31G*:UFF=QEq)=(EmbedCharge) nosymm"
 comfile.write("{0}\n{1}\n{2}\n{3}\n\n Title \n\n0 1\n".format(chk,nproc,mem,input_line))
 for atom in final_cluster[:natoms]:
     atomStr = "{:>6} 0 {:10.6f} {:10.6f} {:10.6f} H \n".format(atom.elem, atom.x, atom.y, atom.z)
