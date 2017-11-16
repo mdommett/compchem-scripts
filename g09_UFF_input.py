@@ -51,3 +51,4 @@ comfile.write("{0}\n{1}\n{2}\n{3}\n\n Title \n\n0 1\n\n".format(chk,nproc,mem,in
 
 
 ef.write_xyz("test.xyz",cluster)
+
