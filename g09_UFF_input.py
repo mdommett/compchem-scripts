@@ -36,7 +36,7 @@ comfile = open(args.input[:-4]+"_UFF.com","w")
 chk = "%chk={0}.chk".format(sys.argv[1][:-4])
 nproc = "%nproc=4"
 mem = "%mem=28GB"
-input_line = "#p ONIOM(wb97xd/6-31G*:UFF=:qQEq)=(EmbedCharge) nosymm"
+input_line = "#p ONIOM(wb97xd/6-31Gc*:UFF=:qQEq)=(EmbedCharge) nosymm"
 comfile.write("{0}\n{1}\n{2}\n{3}\n\n Title \n\n0 1\n".format(chk,nproc,mem,input_line))
 for atom in final_cluster[:natoms]:
     atomStr = "{:>6} 0 {:10.6f} {:10.6f} {:10.6f} H \n".format(atom.elem, atom.x, atom.y, atom.z)
@@ -45,7 +45,7 @@ for atom in final_cluster[natoms:]:
     atomStr = "{:>6} -1 {:10.6f} {:10.6f} {:10.6f} M \n".format(atom.elem, atom.x, atom.y, atom.z)
     comfile.write(atomStr)
 comfile.write("\n--link1--\n")
-input_line="#p ONIOM(wb97xd/6311++G** td=(nstates=3):UFF=:qQEq)=(EmbedCharge) geom=check guess=read nosymm"
+input_line="#p ONIOM(wb97xd/6-311++G** td=(nstates=3):UFF=:qQEq)=(EmbedCharge) geom=check guess=read nosymm"
 comfile.write("{0}\n{1}\n{2}\n{3}\n\n Title \n\n0 1\n\n".format(chk,nproc,mem,input_line))
 
 
