@@ -76,6 +76,7 @@ if args.gnu:
 
 elif args.mpl:
     import matplotlib.pyplot as plt
+    matplotlib.use('MacOSX') 
     mpl_plot(x,sum)
     for i in range(len(energies)):
         plt.plot((energies[i],energies[i]),(0,stick_intensities[i]),'-k')
