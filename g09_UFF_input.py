@@ -31,7 +31,7 @@ ordered=sorted(unordered,key=itemgetter(1))
 final_molecules=[i[0] for i in ordered]
 final_cluster=[item for sublist in final_molecules for item in sublist]
 ef.write_xyz(args.input[:-4]+"-cluster.xyz",final_cluster)
-jobname=args.input[:-4]+"_UFF
+jobname=args.input[:-4]+"_UFF"
 comfile = open(jobname+".com","w")
 
 chk = "%chk={0}.chk".format(jobname)
@@ -51,4 +51,3 @@ comfile.write("{0}\n{1}\n{2}\n{3}\n\n Title \n\n0 1\n\n".format(chk,nproc,mem,in
 
 
 ef.write_xyz("test.xyz",cluster)
-
