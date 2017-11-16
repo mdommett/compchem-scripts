@@ -31,12 +31,13 @@ ordered=sorted(unordered,key=itemgetter(1))
 final_molecules=[i[0] for i in ordered]
 final_cluster=[item for sublist in final_molecules for item in sublist]
 ef.write_xyz(args.input[:-4]+"-cluster.xyz",final_cluster)
-comfile = open(args.input[:-4]+"_UFF.com","w")
+jobname=args.input[:-4]+"_UFF
+comfile = open(jobname+".com","w")
 
-chk = "%chk={0}.chk".format(sys.argv[1][:-4])
+chk = "%chk={0}.chk".format(jobname)
 nproc = "%nproc=4"
 mem = "%mem=28GB"
-input_line = "#p ONIOM(wb97xd/6-31Gc*:UFF=:qQEq)=(EmbedCharge) nosymm"
+input_line = "#p ONIOM(wb97xd/6-31Gc*:UFF=qQEq)=(EmbedCharge) nosymm"
 comfile.write("{0}\n{1}\n{2}\n{3}\n\n Title \n\n0 1\n".format(chk,nproc,mem,input_line))
 for atom in final_cluster[:natoms]:
     atomStr = "{:>6} 0 {:10.6f} {:10.6f} {:10.6f} H \n".format(atom.elem, atom.x, atom.y, atom.z)
