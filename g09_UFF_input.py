@@ -49,7 +49,7 @@ c_m_centroid=ha.find_centroid(central_molecule)
 cluster_start=time.time()
 final_cluster=make_clust(cluster,args.radius,args.bond,c_m_centroid[0],c_m_centroid[1],c_m_centroid[2],natoms)
 cluster_end=time.time()
-print "Time to make cluster: {}".format(round(cluster_end-cluster-start),3)
+print "Time to make cluster: {}".format(round(cluster_end-cluster_start),3)
 print c_m_centroid
 print ha.find_centroid(final_cluster)
 ef.write_xyz(args.input[:-4]+"-cluster.xyz",final_cluster)
