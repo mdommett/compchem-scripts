@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-
+import time
+start = time.time()
 import numpy as np
 import read_file as rf
 import edit_file as ef
@@ -45,7 +46,10 @@ for i in central_molecule:
     cluster.remove(i)
     cluster.insert(0,i)
 c_m_centroid=ha.find_centroid(central_molecule)
+cluster_start=time.time()
 final_cluster=make_clust(cluster,args.radius,args.bond,c_m_centroid[0],c_m_centroid[1],c_m_centroid[2],natoms)
+cluster_end=time.time()
+print "Time to make cluster: {}".format(round(cluster_end-cluster-start),3)
 print c_m_centroid
 print ha.find_centroid(final_cluster)
 ef.write_xyz(args.input[:-4]+"-cluster.xyz",final_cluster)
@@ -65,6 +69,8 @@ for atom in final_cluster[:natoms]:
 for atom in final_cluster[natoms:]:
     atomStr = "{:>6} -1 {:10.6f} {:10.6f} {:10.6f} M \n".format(atom.elem, atom.x, atom.y, atom.z)
     comfile.write(atomStr)
+end = time.time()
+print "\nTotal time: {}s".format(round((end - start),3))
 #comfile.write("\n--link1--\n")
 #input_line="#p ONIOM(wb97xd/6-311++G** td=(nstates=3):UFF=QEq)=(EmbedCharge) geom=check guess=read nosymm"
 #comfile.write("{0}\n{1}\n{2}\n{3}\n\n Title \n\n0 1\n\n".format(chk,nproc,mem,input_line))
