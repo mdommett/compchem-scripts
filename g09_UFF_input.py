@@ -67,6 +67,7 @@ for atom in final_cluster[:natoms]:
 for atom in final_cluster[natoms:]:
     atomStr = "{:>6} -1 {:10.6f} {:10.6f} {:10.6f} M \n".format(atom.elem, atom.x, atom.y, atom.z)
     comfile.write(atomStr)
+comfile.write("\n")
 end = time.time()
 print "\nTotal time: {}s".format(end - start)
 #comfile.write("\n--link1--\n")
