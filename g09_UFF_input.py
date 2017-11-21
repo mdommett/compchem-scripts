@@ -51,6 +51,9 @@ final_cluster=make_clust(cluster,args.radius,args.bond,c_m_centroid[0],c_m_centr
 cluster_end=time.time()
 print "Time to make cluster: {}s".format(cluster_end-cluster_start)
 ef.write_xyz(args.input[:-4]+"-cluster.xyz",final_cluster)
+final_cluster_centroid=ha.find_centroid(final_cluster)
+print "Cluster centroid: {} {} {}".format(final_cluster_centroid[0],final_cluster_centroid[1],final_cluster_centroid[2])
+print "Central molecule centroid: {} {} {}".format(c_m_centroid[0],c_m_centroid[1],c_m_centroid[2])
 ######################################################################
 
 jobname=args.input[:-4]+"_UFF"
