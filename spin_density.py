@@ -11,7 +11,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-t","--type",help="[Mull] Mulliken charges or [NBO] NBO charges", default="Mull")
 parser.add_argument("--input",type=str,help="Input file")
 parser.add_argument("-p","--plot",help="Plot output",action='store_true')
-args=parser.parse_args()
+user_input = sys.argv[1:]
+args=parser.parse_args(user_input)
 
 if args.type=="NBO":
     NBO_in = open(args.input,"r").read().splitlines()
