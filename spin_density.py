@@ -9,9 +9,9 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-t","--type",help="[Mull] Mulliken charges or [NBO] NBO charges", default="Mull")
-parser.add_argument("--input",type=str,help="Input file")
+parser.add_argument("input",type=str,help="Input file")
 parser.add_argument("-p","--plot",help="Plot output",action='store_true')
-user_input = sys.argv[1:]
+user_input = argv[1:]
 args=parser.parse_args(user_input)
 
 if args.type=="NBO":
@@ -58,7 +58,7 @@ if args.type=="NBO":
         ax.set_xlabel("Atom Number")
         ax.set_ylabel("Spin density")
         ax.bar(alphanumber,density)
-        plt.savefig(str(args.input)[:-4])+"_spindensity.pdf"
+        plt.savefig(str(args.input)[:-4]+"_spindensity.pdf")
         plt.show()
 else:
     infile = open(args.input,"r").read().splitlines()
