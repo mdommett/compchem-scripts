@@ -88,7 +88,7 @@ for n,f in enumerate(args.input):
 
     elif args.mpl:
         plt.scatter(x,sum,s=2,c=colours[n])
-        plt.plot(x,sum,color=colours[n],label=f)
+        plt.plot(x,sum,color=colours[n],label=f[:-4])
         plt.xlabel("Energy (nm)")
         plt.ylabel("$\epsilon$ (L mol$^{-1}$ cm$^{-1}$)")
         if args.sticks:
@@ -106,4 +106,3 @@ plt.legend()
 if args.save:
     plt.savefig(args.save+".pdf")
 plt.show()
-
