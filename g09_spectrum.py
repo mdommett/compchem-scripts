@@ -59,10 +59,6 @@ def mpl_plot(xaxis,yaxis):
     plt.ylabel("$\epsilon$ (L mol$^{-1}$ cm$^{-1}$)")
     return
 
-colours=["red","blue","green","orange"]
-if args.mpl:
-    import matplotlib.pyplot as plt
-    from matplotlib import colors as mcolors
 
 for n,f in enumerate(args.input):
     infile=open(f,"r").read().splitlines()
@@ -87,6 +83,8 @@ for n,f in enumerate(args.input):
         gnu_plot(x,sum)
 
     elif args.mpl:
+        import matplotlib.pyplot as plt
+        colours=["red","blue","green","orange","black","cyan","magenta"]
         plt.scatter(x,sum,s=2,c=colours[n])
         plt.plot(x,sum,color=colours[n],label=f[:-4])
         plt.xlabel("Energy (nm)")
