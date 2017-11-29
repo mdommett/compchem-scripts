@@ -1,0 +1,4 @@
+#!/bin/bash 
+
+obabel $1 -O connectivities.com -xb
+echo "Written to connectivities.com"
