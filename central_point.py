@@ -3,7 +3,7 @@
 import numpy as np
 from sys import argv
 
-xyz = open(argv[1],'r')
+xyz = open(argv[1],'r')[2:]
 
 xc =[]
 yc =[]
