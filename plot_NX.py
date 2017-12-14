@@ -139,7 +139,7 @@ def main(unit,gaussian,experimental,pdf,jpg,show,nx_filename):
         total_plot.plot(x_item, y_item)
 
     # labels
-    plt.ylabel('Cross section', fontsize=12)
+    plt.ylabel('Normalised Intensity', fontsize=12)
     plt.xlabel('Energy ({})'.format(unit), fontsize=12)
     # some options
     if gaussian:
