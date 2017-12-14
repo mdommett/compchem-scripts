@@ -134,7 +134,7 @@ def main(unit,gaussian,experimental,pdf,jpg,show,nx_filename):
         y_list.append(y_temp)
     fig, total_plot = plt.subplots()
 
-    total_plot.set_prop_cycle(cycler('color', ['c', 'm', 'y', 'k']))
+    total_plot.set_prop_cycle(cycler('color', ['b', 'r', 'b', 'c']))
     for x_item, y_item in zip(x_list, y_list):
         total_plot.plot(x_item, y_item)
 
