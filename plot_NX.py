@@ -140,7 +140,7 @@ def main(unit,gaussian,experimental,pdf,jpg,show,nx_filename):
 
     # labels
     plt.ylabel('Cross section', fontsize=12)
-    plt.xlabel('Energy in ' + unit, fontsize=12)
+    plt.xlabel('Energy ({})'.format(unit), fontsize=12)
     # some options
     if gaussian:
         for g_set in gaussian:
