@@ -127,20 +127,20 @@ def main(unit,gaussian,experimental,pdf,jpg,show,nx_filename):
     # sets of spectrum data
     x_list = []
     y_list = []
-
+    fig, total_plot = plt.subplots()
+    total_plot.set_prop_cycle(cycler('color', ['k', 'r', 'b', 'c']))
     for file_name in nx_filename:
+        x_list,y_list=[],[]
         x_temp, y_temp = read_NX(file_name, unit)
         x_list.append(x_temp)
         y_list.append(y_temp)
-    fig, total_plot = plt.subplots()
+        for x_item, y_item in zip(x_list, y_list):
+            total_plot.plot(x_item, y_item,label=file_name)
 
-    total_plot.set_prop_cycle(cycler('color', ['k', 'r', 'b', 'c']))
-    for x_item, y_item in zip(x_list, y_list):
-        total_plot.plot(x_item, y_item)
-
-    # labels
-    plt.ylabel('Normalised Intensity', fontsize=12)
-    plt.xlabel('Energy ({})'.format(unit), fontsize=12)
+        # labels
+        plt.ylabel('Normalised Intensity', fontsize=12)
+        plt.xlabel('Energy ({})'.format(unit), fontsize=12)
+        plt.legend()
     # some options
     if gaussian:
         for g_set in gaussian:
