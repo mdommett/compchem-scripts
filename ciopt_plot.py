@@ -18,8 +18,8 @@ with open("data","w") as d:
         
 with open("plot","w") as p:
     p.write("set xlabel \"Step\"\nset ylabel \"Energy (eV)\"\n")
-    p.write("plot 'data' using 1:2 title 'S0' with lines lt -1,\\\n")
-    p.write("     'data' using 1:3 title 'S1' with lines lt -1 linecolor 1")
+    p.write("plot 'data' using 1:2 title 'S0' with lines linecolor black linewidth 2,\\\n")
+    p.write("     'data' using 1:3 title 'S1' with lines linecolor 'red' linewidth 2")
     p.close()
 
 system("gnuplot -persist plot")
