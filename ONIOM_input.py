@@ -14,7 +14,7 @@ outfile = open(argv[2]+".com","w")
 chk = "%chk={0}.chk".format(argv[2])
 nproc = "%nproc={0}".format(raw_input("Number of processors: "))
 mem = "%mem={0}GB".format(raw_input("Total memory in GB : "))
-input_line = "#p ONIOM(wB97XD/6-31G*:Amber)=(EmbedCharge) nosymm"
+input_line = "#p ONIOM(wB97XD/6-31G*:amber=(hardfirst))=(EmbedCharge) nosymm opt geom=connectivity"
 ###############
 
 def group_to_range(group):
@@ -77,7 +77,7 @@ for i in H:
     outfile.write("{0:<2}  0 {1:>13.9f} {2:>13.9f} {3:>13.9f} H\n".format(symbol[i-1],x[i-1],y[i-1],z[i-1]))
 
 for i in M:
-    outfile.write("{0:<2} -1 {1:>13.9f} {2:>13.9f} {3:>13.9f} M\n".format(symbol[i-1],x[i-1],y[i-1],z[i-1]))
+    outfile.write("{0:<2} 0 {1:>13.9f} {2:>13.9f} {3:>13.9f} M\n".format(symbol[i-1],x[i-1],y[i-1],z[i-1]))
 
 if Nlevels == 3:
     for i in L:
