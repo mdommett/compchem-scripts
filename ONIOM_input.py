@@ -77,7 +77,7 @@ for i in H:
     outfile.write("{0:<2}  0 {1:>13.9f} {2:>13.9f} {3:>13.9f} H\n".format(symbol[i-1],x[i-1],y[i-1],z[i-1]))
 
 for i in M:
-    outfile.write("{0:<2} 0 {1:>13.9f} {2:>13.9f} {3:>13.9f} M\n".format(symbol[i-1],x[i-1],y[i-1],z[i-1]))
+    outfile.write("{0:<2} -1 {1:>13.9f} {2:>13.9f} {3:>13.9f} M\n".format(symbol[i-1],x[i-1],y[i-1],z[i-1]))
 
 if Nlevels == 3:
     for i in L:
