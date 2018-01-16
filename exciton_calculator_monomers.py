@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 #
 #
 # Calculate the exciton coupling between constituent monomers in a chromophores,

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 # Takes an xyz of a supercell and cuts a sphere of atoms. Options defined in the molecule file. I should edit this to use argparser instead. The centre of mass is used as the start position
 

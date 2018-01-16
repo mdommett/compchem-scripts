@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 import numpy as np
 from itertools import chain
 from sys import argv
