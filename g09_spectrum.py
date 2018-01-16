@@ -82,7 +82,7 @@ for n,f in enumerate(args.input):
     if args.gnu:
         gnu_plot(x,sum)
 
-    elif args.mpl:
+    else:
         import matplotlib.pyplot as plt
         colours=["red","blue","green","orange","black","cyan","magenta"]
         plt.scatter(x,sum,s=2,c=colours[n])
@@ -95,9 +95,6 @@ for n,f in enumerate(args.input):
 
 
 
-
-    else:
-        exit("Please specify -mpl or -gnu to plot with matplotlib or gnuplot")
 if args.r:
     plt.xlim(min(args.r),max(args.r))
 plt.legend()
