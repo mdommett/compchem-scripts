@@ -10,7 +10,8 @@ fout = open(argv[1]+".xyz","w")
 lines = filter(None, (line.rstrip() for line in finp))
 for i,j in enumerate(lines):
     if j.split()[0]=="NAtoms=":
-	       natoms=int(j.split()[3])
+        natoms=int(j.split()[3])
+        break   
 for i,j in enumerate(lines):
     if j == " Number     Number       Type             X           Y           Z":
         count = int(i)

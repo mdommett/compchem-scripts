@@ -49,11 +49,11 @@ c_m_centroid=ha.find_centroid(central_molecule)
 cluster_start=time.time()
 final_cluster=make_clust(cluster,args.radius,args.bond,c_m_centroid[0],c_m_centroid[1],c_m_centroid[2],natoms)
 cluster_end=time.time()
-print "Time to make cluster: {}s".format(cluster_end-cluster_start)
+print("Time to make cluster: {}s".format(cluster_end-cluster_start))
 ef.write_xyz(args.input[:-4]+"-cluster.xyz",final_cluster)
 final_cluster_centroid=ha.find_centroid(final_cluster)
-print "Cluster centroid: {} {} {}".format(final_cluster_centroid[0],final_cluster_centroid[1],final_cluster_centroid[2])
-print "Central molecule centroid: {} {} {}".format(c_m_centroid[0],c_m_centroid[1],c_m_centroid[2])
+print("Cluster centroid: {} {} {}".format(final_cluster_centroid[0],final_cluster_centroid[1],final_cluster_centroid[2]))
+print("Central molecule centroid: {} {} {}".format(c_m_centroid[0],c_m_centroid[1],c_m_centroid[2]))
 ######################################################################
 
 jobname=args.input[:-4]+"_UFF"
@@ -76,4 +76,4 @@ comfile.write("\n--link1--\n")
 input_line="#p ONIOM(wb97xd/6-311++G** td=(nstates=3):UFF=QEq)=(EmbedCharge) geom=check guess=read nosymm"
 comfile.write("{0}\n{1}\n{2}\n{3}\n\n Title \n\n0 1\n\n".format(chk,nproc,mem,input_line))
 end = time.time()
-print "\nTotal time: {}s".format(end - start)
+print("\nTotal time: {}s".format(end - start))
