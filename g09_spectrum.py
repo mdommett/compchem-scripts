@@ -8,7 +8,21 @@ import argparse
 #########
 #########
 """
-see http://gaussian.com/uvvisplot/ for implementation details
+This program plots a UV/Vis absorption spectrum from a Gaussian 09 output file. Guassian broadening is used
+to generate peaks about the excitation energy. see http://gaussian.com/uvvisplot/ for implementation details.
+
+Multiple Gaussian 09 output files can be plotted at the same time.
+
+Usage:
+
+g09_spectrum.py <outputfile>
+
+A number of options can be used to control the output:
+-gnu : plot using gnuplot
+-mpl: plot using matplotlib (recommended)
+-sticks: plot excitation energies as a stick g09_spectrum
+-sd : set the standard deviation (in eV). Default is 0.4
+-save : save resultant specturm as pdf file
 
 """
 parser = argparse.ArgumentParser()
@@ -59,45 +73,45 @@ def mpl_plot(xaxis,yaxis):
     plt.ylabel("$\epsilon$ (L mol$^{-1}$ cm$^{-1}$)")
     return
 
+if __name__=='__main__':
+    for n,f in enumerate(args.input):
+        infile=open(f,"r").read().splitlines()
+        energies,os_strengths=read_es(infile)
 
-for n,f in enumerate(args.input):
-    infile=open(f,"r").read().splitlines()
-    energies,os_strengths=read_es(infile)
+        if args.r:
+            x=np.linspace(max(args.r),min(args.r),1000)
+
+        else:
+            x=np.linspace(max(energies)+200,min(energies)-200,1000)
+
+        sum=[]
+        for ref in x:
+            tot=0
+            for i in range(len(energies)):
+                tot+=abs_max(os_strengths[i],energies[i],ref)
+            sum.append(tot)
+
+        stick_intensities=[abs_max(os_strengths[i],energies[i],energies[i]) for i in range(len(energies))]
+
+        if args.gnu:
+            gnu_plot(x,sum)
+
+        else:
+            import matplotlib.pyplot as plt
+            colours=["red","blue","green","orange","black","cyan","magenta"]
+            plt.scatter(x,sum,s=2,c=colours[n])
+            plt.plot(x,sum,color=colours[n],label=f[:-4])
+            plt.xlabel("Energy (nm)")
+            plt.ylabel("$\epsilon$ (L mol$^{-1}$ cm$^{-1}$)")
+            if args.sticks:
+                for i in range(len(energies)):
+                    plt.plot((energies[i],energies[i]),(0,stick_intensities[i]),colours[n])
+
+
 
     if args.r:
-        x=np.linspace(max(args.r),min(args.r),1000)
-
-    else:
-        x=np.linspace(max(energies)+200,min(energies)-200,1000)
-
-    sum=[]
-    for ref in x:
-        tot=0
-        for i in range(len(energies)):
-            tot+=abs_max(os_strengths[i],energies[i],ref)
-        sum.append(tot)
-
-    stick_intensities=[abs_max(os_strengths[i],energies[i],energies[i]) for i in range(len(energies))]
-
-    if args.gnu:
-        gnu_plot(x,sum)
-
-    else:
-        import matplotlib.pyplot as plt
-        colours=["red","blue","green","orange","black","cyan","magenta"]
-        plt.scatter(x,sum,s=2,c=colours[n])
-        plt.plot(x,sum,color=colours[n],label=f[:-4])
-        plt.xlabel("Energy (nm)")
-        plt.ylabel("$\epsilon$ (L mol$^{-1}$ cm$^{-1}$)")
-        if args.sticks:
-            for i in range(len(energies)):
-                plt.plot((energies[i],energies[i]),(0,stick_intensities[i]),colours[n])
-
-
-
-if args.r:
-    plt.xlim(min(args.r),max(args.r))
-plt.legend()
-if args.save:
-    plt.savefig(args.save+".pdf")
-plt.show()
+        plt.xlim(min(args.r),max(args.r))
+    plt.legend()
+    if args.save:
+        plt.savefig(args.save+".pdf")
+    plt.show()
