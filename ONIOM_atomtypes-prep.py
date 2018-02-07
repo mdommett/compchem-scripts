@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 from sys import argv,exit
-atoms=open("atoms","read").read().splitlines()
-types=open("atomtypes","read").read().splitlines()
+atoms=open("atoms","r").read().splitlines()
+types=open("atomtypes","r").read().splitlines()
 
 with open("atomtypes-complete","w") as atomtypes_tmp:
     for i in range(len(atoms)):
