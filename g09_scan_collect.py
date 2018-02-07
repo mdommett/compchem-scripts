@@ -45,7 +45,7 @@ def read_energies(infile,state):
         if search_string in line:
             hold_energy=float(line.split()[4])
 
-        if line==" Optimization completed.":
+        if " Optimization completed" in line:
             au_energy.append(hold_energy)
             del hold_energy
 
