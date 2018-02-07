@@ -4,8 +4,8 @@
 
 from sys import argv
 
-atomtypes =  open(argv[1],"r:").read().splitlines()
-charges = open(argv[2],"r:").read().splitlines()
+atomtypes =  open(argv[1],"r").read().splitlines()
+charges = open(argv[2],"r").read().splitlines()
 xyz = open(argv[3],"r").read().splitlines()
 writefile=open(argv[4],"w")
 writefile.write("{0}\n\n".format(len(atomtypes)))

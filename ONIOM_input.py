@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 import numpy as np
 from itertools import chain
@@ -61,7 +61,7 @@ if Nlevels == 2:
         print "There is a problem with the molecule input file. There are {0} in molecule but {1} in the xyz file".format(len(H+M),len(symbol))
         sys.exit
 
-        
+
 if Nlevels == 3:
     H = rangeexpand(molecule[1])
     M = rangeexpand(molecule[2])
@@ -82,5 +82,5 @@ for i in M:
 if Nlevels == 3:
     for i in L:
         outfile.write("{0:<2} -1 {1:>13.9f} {2:>13.9f} {3:>13.9f} L\n".format(symbol[i-1],x[i-1],y[i-1],z[i-1]))
-    
+
 outfile.write("\n")
