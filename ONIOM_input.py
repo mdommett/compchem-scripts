@@ -12,9 +12,9 @@ outfile = open(argv[2]+".com","w")
 
 ###############
 chk = "%chk={0}.chk".format(argv[2])
-nproc = "%nproc=4"#.format(raw_input("Number of processors: "))
-mem = "%mem=28GB"#.format(raw_input("Total memory in GB : "))
-input_line = "#p ONIOM(wB97XD/6-31G*/Auto td=(nstates=1,root=1):amber=(hardfirst))=(EmbedCharge) nosymm geom=connectivity"
+nproc = "%nproc=2"#.format(raw_input("Number of processors: "))
+mem = "%mem=14GB"#.format(raw_input("Total memory in GB : "))
+input_line = "#p ONIOM(wB97XD/6-31G*:amber=(hardfirst))=(EmbedCharge) nosymm geom=connectivity"
 ###############
 
 def group_to_range(group):
