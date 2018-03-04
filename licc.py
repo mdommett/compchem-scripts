@@ -21,7 +21,7 @@ def interpolate(initial,final,diff,steps):
             new_coords[atom].x=initial[atom].x+(diff[atom,0]/steps)*step
             new_coords[atom].y=initial[atom].y+(diff[atom,1]/steps)*step
             new_coords[atom].z=initial[atom].z+(diff[atom,2]/steps)*step
-        ef.write_xyz(str('mira_{}.xyz'.format(step)),new_coords)
+        ef.write_xyz(str('step_{}.xyz'.format(step)),new_coords)
 
 if __name__ == "__main__":
     # parse the input
