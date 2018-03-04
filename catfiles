@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ls $1* |while read p; do cat $p >> $2; done
