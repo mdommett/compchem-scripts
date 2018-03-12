@@ -13,6 +13,8 @@ hold_geom=[]
 for i,j in enumerate(lines):
     if j.split()[0]=="NAtoms=":
         natoms=int(j.split()[3])
+        break
+for i,j in enumerate(lines):
     if j == " Number     Number       Type             X           Y           Z":
         hold_geom=[]
         count = int(i)
