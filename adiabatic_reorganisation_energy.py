@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 """
 Calculate the adiabatic reorganisation energy from two save_geometries
+
+usage: $adiabatic_reorganisation_energy.py ground_state_minimum.out excited_state_mininum.out
 """
 import sys
 gs_string="SCF Done:"
