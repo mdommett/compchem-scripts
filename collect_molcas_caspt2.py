@@ -6,7 +6,7 @@ with open(sys.argv[1],"r") as infile:
     energies=[]
     for line in infile:
         if "MS-CASPT2 Root" in line:
-            energies.append(line.split()[5])
+            energies.append(float(line.split()[5]))
 if not energies:
     sys.exit("Couldn't find any MS-CASPT2 roots!")
 else:
