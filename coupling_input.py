@@ -13,8 +13,8 @@ monomers=ds.make_molecules(dimer,1.6)
 outfile = open(sys.argv[1][:-4]+".com","w")
 
 chk = "%chk={0}.chk".format(sys.argv[1][:-4])
-nproc = "%nproc=4"
-mem = "%mem=28GB"
+nproc = "%nproc=2"
+mem = "%mem=14GB"
 input_line = "#p wb97xd 6-311++G** td=(nstates=4) nosymm"
 ###############
 outfile.write("{0}\n{1}\n{2}\n{3}\n\n Title \n\n0 1\n".format(chk,nproc,mem,input_line))

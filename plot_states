@@ -1,0 +1,29 @@
+#!/usr/bin/perl
+
+# generate gnuplot input and graph from states.dat output file.
+# amended from original script by Mario Barbatti
+
+$mld  = $ENV{"NX"};        # NX environment
+# $gnuplot = $ENV{"gnuplot"};
+
+print "Number of states:";
+$_=<STDIN>;
+chomp;
+$nstat=$_;
+
+open(PL,">plot");
+print PL "set xlabel \"Time (fs)\"\nset ylabel \"Energy (hartree)\"\n";
+if ($nstat==1){
+    print PL "plot 'states.dat' using 1:2  title '' with lines \n";
+}else{
+  print PL "plot ";
+  for ($n=2;$n<$nstat+2;$n++){
+    print PL "'states.dat' using 1:$n  title '' with lines,";
+  }
+}
+
+close(PL);
+
+system("gnuplot -persist plot");
+
+system("rm -f plot");
