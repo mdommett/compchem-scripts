@@ -1,10 +1,14 @@
 #!/usr/bin/env python
 
 import sys
-with open(sys.argv[1],"r") as f:
-    for i,line in enumerate(f):
-        if " [GEOMETRIES] (XYZ)" in line:
-            natoms=int(f[i+1].split()[0])
-        break
-print(i)
-print(natoms)
+infile=open(sys.argv[1],"r").read().splitlines()
+outfile=open(sys.argv[2],"w")
+for i,line in enumerate(infile):
+    if "[GEOMETRIES] (XYZ)" in line:
+        start=i+1
+    if "[FORCES]" in line:
+        stop=i
+
+
+for line in infile[start:stop]:
+    outfile.write("{}\n".format(line))
