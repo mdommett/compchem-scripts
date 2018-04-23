@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+# usage:
+# python mld2xyz.py *.geo.molden your-utfile.xyz
+# to be used to convet molcas .geo.molden files to xyz geometries
 
 import sys
 infile=open(sys.argv[1],"r").read().splitlines()

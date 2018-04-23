@@ -13,7 +13,7 @@ def parse_energies(infile):
     return E[-1],f[-1]
 
 def ev_to_cm(value):
-    return value/8065.54429
+    return value*8065.54429
 def radiative_rate(E,f):
     return (f*(ev_to_cm(E)**2))/(1.499)
 
