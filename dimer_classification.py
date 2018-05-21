@@ -126,10 +126,15 @@ def get_snap_vector((mon_0_0,mon_0_1),(mon_1_0,mon_1_1),mon_1):
     the molecule with points 3 and 4 is translated
     """
 
+    # intermolecular vectors between the extreme points of each molecule
     extreme_vectors=np.array([mon_1_0-mon_0_0,mon_1_0-mon_0_1,
     mon_1_1-mon_0_0,mon_1_1-mon_0_1])
-    mon_1_translations=[mon_1-vector for vector in extreme_vectors]
-    snap_vector=extreme_vectors[(np.array([abs(np.mean(translated)) for translated in mon_1_translations]).argmin())]
+    # translate each extreme point in mon_1 to each extreme point in molecule 0
+    mon_1_translations=np.array([np.array((mon_1_0,mon_1_1)-vector) for vector in extreme_vectors])
+    # new intermolecular extreme vectors
+    new_extreme_vectors=np.array(mon_1_translations-(mon_0_0,mon_0_1))
+    # best translation is the one that minimises the distances between the intermolecular extremes
+    snap_vector=extreme_vectors[np.array([abs(magnitude(vector)) for vector in new_extreme_vectors]).argmin()]
     return snap_vector
 
 if __name__=='__main__':
@@ -146,7 +151,6 @@ if __name__=='__main__':
     mon_1_distances=pairwise_distances(mon_1)
     mon_0_extreme_atoms=long_axis(mon_0_distances)
     mon_1_extreme_atoms=long_axis(mon_1_distances)#+natoms_monomer # back to index of original dimer
-
     mon_0_extreme_coords=np.array([mon_0[mon_0_extreme_atoms[0]],mon_0[mon_0_extreme_atoms[1]]])
     mon_1_extreme_coords=np.array([mon_1[mon_1_extreme_atoms[0]],mon_1[mon_1_extreme_atoms[1]]])
 
@@ -158,8 +162,8 @@ if __name__=='__main__':
     # in matrix form to get every combination
     snap_vector=get_snap_vector(mon_0_extreme_coords,mon_1_extreme_coords,mon_1)
     magnitude_snap_vector=magnitude(snap_vector)
-    print(magnitude_snap_vector)
     mon_1_snapped=mon_1-snap_vector
+    #print(mon_1_snapped[mon_1_extreme_atoms[0]])
     snapped_dim=np.concatenate((mon_0,mon_1_snapped))
     for i ,j in enumerate(dimer):
         j.x,j.y,j.z=snapped_dim[i]
