@@ -5,6 +5,7 @@ import numpy as np
 import edit_file as ef
 
 """
+ref: https://pubs.acs.org/doi/suppl/10.1021/acs.jpca.5b06639/suppl_file/jp5b06639_si_001.pdf
     A
     |
  C--B--D
