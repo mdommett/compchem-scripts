@@ -5,6 +5,8 @@ import numpy as np
 import edit_file as ef
 from sklearn.metrics.pairwise import pairwise_distances
 #np.seterr(divide='ignore', invalid='ignore') # divide by zero
+
+
 def coordinate_matrix(atoms):
     coords=np.zeros((len(atoms),3))
     for i in range(len(atoms)):
@@ -136,25 +138,57 @@ def get_snap_vector((mon_0_0,mon_0_1),(mon_1_0,mon_1_1)):
     snap_vector=extreme_vectors[np.array([abs(magnitude(vector)) for vector in new_extreme_vectors]).argmin()]
     return snap_vector
 
+def detect_element_indices(atoms,symbol):
+    """
+    get indexes for specified element from an array of atom objects
+    """
+    detected_indices=[index for index,atom in enumerate(atoms) if atom.elem==symbol]
+    return detected_indices
+
+def detect_nearest_element_distance(distance_matrix,ref_atom_index):
+    """
+    """
+    return np.min(distance_matrix[ref_atom_index,:][np.nonzero(distance_matrix[ref_atom_index,:])])
+
+def detect_CO_indexes(atoms,distance_matrix):
+    oxygen_indices=detect_element_indices(atoms,'O')
+    oxygen_closest_distances=[detect_nearest_element_distance(distance_matrix,i) for i in oxygen_indices]
+
+    for indice_index,distance in enumerate(oxygen_closest_distances):
+        closest_atom_index=int(np.where(distance_matrix[oxygen_indices[indice_index],:]==distance)[0])
+        closest_atom=atoms[closest_atom_index].elem
+        if closest_atom=="C":
+            C=closest_atom_index
+            O=oxygen_indices[indice_index]
+            return C,O
+
+
 if __name__=='__main__':
 
     dimer=rf.read_pos(argv[1])
     natoms_dimer=len(dimer)
     natoms_monomer=natoms_dimer/2
-    dimer_array=np.zeros((natoms_dimer,3))
-
+    monomer_0=dimer[:natoms_monomer]
+    monomer_1=dimer[natoms_monomer:]
     mon_0=coordinate_matrix(dimer[0:natoms_monomer])
     mon_1=coordinate_matrix(dimer[natoms_monomer:])
     dim=np.concatenate((mon_0,mon_1),axis=0)
     mon_0_distances=pairwise_distances(mon_0)
     mon_1_distances=pairwise_distances(mon_1)
+    mon_0_C,mon_0_O=(detect_CO_indexes(monomer_0,mon_0_distances))
+    mon_1_C,mon_1_O=(detect_CO_indexes(monomer_1,mon_1_distances))
+
     mon_0_extreme_atoms=long_axis(mon_0_distances)
     mon_1_extreme_atoms=long_axis(mon_1_distances)#+natoms_monomer # back to index of original dimer
     mon_0_extreme_coords=np.array([mon_0[mon_0_extreme_atoms[0]],mon_0[mon_0_extreme_atoms[1]]])
     mon_1_extreme_coords=np.array([mon_1[mon_1_extreme_atoms[0]],mon_1[mon_1_extreme_atoms[1]]])
 
     mon_0_long_axis=mon_0_extreme_coords[1]-mon_0_extreme_coords[0]
+    mon_0_CO_axis=mon_0[mon_0_O]-mon_0[mon_0_C]
     mon_1_long_axis=mon_1_extreme_coords[1]-mon_1_extreme_coords[0]
+    mon_1_CO_axis=mon_1[mon_1_O]-mon_1[mon_1_C]
+    print(dihedral_angle(mon_0[mon_0_C],mon_0[mon_0_O],mon_1[mon_1_C],mon_1[mon_1_O]))
+    print(np.degrees(np.arccos(costheta(mon_0_CO_axis,mon_1_CO_axis))))
     #print(dihedral_angle(mon_0[mon_0_extremes[0]],mon_0[mon_0_extremes[1]],mon_1[mon_1_extremes[0]],mon_1[mon_1_extremes[1]]))
 
 
@@ -162,23 +196,36 @@ if __name__=='__main__':
     # in matrix form to get every combination
     snap_vector=get_snap_vector(mon_0_extreme_coords,mon_1_extreme_coords)
     magnitude_snap_vector=magnitude(snap_vector)
-
+    print("Snap vector mangitude: {}".format(magnitude_snap_vector))
     mon_1_snapped=mon_1-snap_vector
     snapped_dim=np.concatenate((mon_0,mon_1_snapped))
-    #translated_dim=align_z(snapped_dim,mon_0_extreme_coords[0],mon_0_extreme_coords[1])
-
-    #mon_1_new_long_axis=mon_1_snapped[mon_1_extreme_atoms[1]]-mon_1_snapped[mon_1_extreme_atoms[0]]
-    translated_dim=translate(snapped_dim,mon_0_extreme_coords[0])
+    translated_dim=translate(dim,mon_0_extreme_coords[0])
     aligned_dim=align_z(dim,mon_0_extreme_coords[0],mon_0_extreme_coords[1])
-    mon_0_new_long_axis=aligned_dim[mon_0_extreme_atoms[1]]-translated_dim[mon_0_extreme_atoms[0]]
-    CO1=translated_dim[30]-translated_dim[26]
-    CO2=translated_dim[40]-translated_dim[37]
+    snapped_and_aligned_dim=align_z(snapped_dim,mon_0_extreme_coords[0],mon_0_extreme_coords[1])
+    mon_0_new_long_axis=snapped_and_aligned_dim[mon_0_extreme_atoms[1]]-snapped_and_aligned_dim[mon_0_extreme_atoms[0]]
+    mon_1_new_long_axis=snapped_and_aligned_dim[mon_1_extreme_atoms[1]]-snapped_and_aligned_dim[mon_1_extreme_atoms[0]]
+
+    #print("Angle before: {}".format(np.degrees(np.arccos(costheta(mon_0_long_axis,mon_1_long_axis)))))
+    #print("Dihedral before  {}".format(dihedral_angle(dim[mon_0_extreme_atoms[0]],dim[mon_0_extreme_atoms[1]],dim[mon_1_extreme_atoms[0]+natoms_monomer],dim[mon_1_extreme_atoms[1]+natoms_monomer])))
+
+    #print("Angle after {}".format(np.degrees(np.arccos(costheta(mon_0_new_long_axis,mon_1_new_long_axis)))))
+    #print("Dihedral after: {}".format(dihedral_angle(snapped_and_aligned_dim[mon_0_extreme_atoms[0]],snapped_and_aligned_dim[mon_0_extreme_atoms[1]],snapped_and_aligned_dim[mon_1_extreme_atoms[0]+natoms_monomer],snapped_and_aligned_dim[mon_1_extreme_atoms[1]+natoms_monomer])))
+    #mon_0_new_long_axis=aligned_dim[mon_0_extreme_atoms[1]]-translated_dim[mon_0_extreme_atoms[0]]
+    CO1=snapped_and_aligned_dim[26]-snapped_and_aligned_dim[30]
+    CO2=snapped_and_aligned_dim[37]-snapped_and_aligned_dim[40]
     COangle=np.degrees(np.arccos(costheta(CO1,CO2)))
-    print(dihedral_angle(translated_dim[26],translated_dim[30],translated_dim[37],translated_dim[40]))
-    print(translated_dim[30])
-    print(COangle)
+
+    #print(translated_dim[30])
+    #print(COangle)
     #print(magnitude(CO))
     z_CO=np.degrees(np.arccos((costheta(CO2,mon_0_new_long_axis))))
+    for i ,j in enumerate(dimer):
+        j.x,j.y,j.z=snapped_and_aligned_dim[i]
+    ef.write_xyz("{}_snapped_and_aligned.xyz".format(argv[1][:-4]),dimer)
+    for i ,j in enumerate(dimer):
+        j.x,j.y,j.z=aligned_dim[i]
+    ef.write_xyz("{}_aligned.xyz".format(argv[1][:-4]),dimer)
+    """
     #print(z_CO)
 
     #aligned_dim=align_z(dim,mon_0_extreme_coords[0],mon_0_extreme_coords[1])
@@ -199,7 +246,7 @@ if __name__=='__main__':
     for i ,j in enumerate(dimer):
         j.x,j.y,j.z=aligned_dim[i]
     ef.write_xyz("{}_aligned.xyz".format(argv[1][:-4]),dimer)
-    """
+
     for no,vector in enumerate(extreme_vectors):
         #print(magnitude(vector))
         #theta = np.radians(angle)
