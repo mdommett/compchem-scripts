@@ -4,7 +4,7 @@ from sys import argv
 import numpy as np
 import edit_file as ef
 from sklearn.metrics.pairwise import pairwise_distances
-
+#np.seterr(divide='ignore', invalid='ignore') # divide by zero
 def coordinate_matrix(atoms):
     coords=np.zeros((len(atoms),3))
     for i in range(len(atoms)):
@@ -68,16 +68,15 @@ def align_z(coordinates,point1,point2):
     # z-axis vector
     z=np.array([0,0,1])
     # cos(theta) of angle to between current vector and z-axis
-    rot_angle=(np.arccos(np.dot(z,vector)/(np.linalg.norm(z)*np.linalg.norm(vector))))%(2*np.pi)# modulo covers for negative angle
+    c=costheta(z,vector)
+    rot_angle=(np.arccos(c))
     #print(np.degrees(rot_angle))
     #  rotation axis that connects vector and z-axis
-    rot_axis=np.cross(z,vector)/np.linalg.norm(np.cross(z,vector))
+    rot_axis=np.cross(z,vector)/magnitude(np.cross(z,vector))
     x,y,z=rot_axis
-    c=np.cos(rot_angle)
-    #print(c)
     C=1-c
 
-    s=np.sqrt(1-(C*C))
+    s=np.sin(rot_angle)
     # https://en.wikipedia.org/wiki/Rotation_matrix#Axis_and_angle
     # rotation matrix :
     rmat = np.array([[x*x*C+c,x*y*C-z*s,x*z*C+y*s],
@@ -93,7 +92,7 @@ def magnitude(vector):
     return np.linalg.norm(vector)
 
 def costheta(vector1,vector2):
-    return np.dot(vector1,vector2)/((magnitude(vector1)*(magnitude(vector2))))
+    return np.dot(vector1,vector2)/(magnitude(vector1)*(magnitude(vector2)))
 
 def distance(point1,point2):
     return np.sqrt(np.sum([(b - a)**2 for (a, b) in zip(point1,point2)]))
@@ -119,7 +118,7 @@ def dihedral_angle(p0,p1,p2,p3):
     theta=-np.arctan2(sin_theta,cos_theta)
     return np.degrees(theta)
 
-def get_snap_vector((mon_0_0,mon_0_1),(mon_1_0,mon_1_1),mon_1):
+def get_snap_vector((mon_0_0,mon_0_1),(mon_1_0,mon_1_1)):
     """
     Pass two coordinates per molecule (the extreme coordinates for the long axis)
     to generate the best vector to overlap the molecules
@@ -158,16 +157,48 @@ if __name__=='__main__':
     mon_1_long_axis=mon_1_extreme_coords[1]-mon_1_extreme_coords[0]
     #print(dihedral_angle(mon_0[mon_0_extremes[0]],mon_0[mon_0_extremes[1]],mon_1[mon_1_extremes[0]],mon_1[mon_1_extremes[1]]))
 
+
     # vectors between the extreme points of each molecule
     # in matrix form to get every combination
-    snap_vector=get_snap_vector(mon_0_extreme_coords,mon_1_extreme_coords,mon_1)
+    snap_vector=get_snap_vector(mon_0_extreme_coords,mon_1_extreme_coords)
     magnitude_snap_vector=magnitude(snap_vector)
+
     mon_1_snapped=mon_1-snap_vector
-    #print(mon_1_snapped[mon_1_extreme_atoms[0]])
     snapped_dim=np.concatenate((mon_0,mon_1_snapped))
+    #translated_dim=align_z(snapped_dim,mon_0_extreme_coords[0],mon_0_extreme_coords[1])
+
+    #mon_1_new_long_axis=mon_1_snapped[mon_1_extreme_atoms[1]]-mon_1_snapped[mon_1_extreme_atoms[0]]
+    translated_dim=translate(snapped_dim,mon_0_extreme_coords[0])
+    aligned_dim=align_z(dim,mon_0_extreme_coords[0],mon_0_extreme_coords[1])
+    mon_0_new_long_axis=aligned_dim[mon_0_extreme_atoms[1]]-translated_dim[mon_0_extreme_atoms[0]]
+    CO1=translated_dim[30]-translated_dim[26]
+    CO2=translated_dim[40]-translated_dim[37]
+    COangle=np.degrees(np.arccos(costheta(CO1,CO2)))
+    print(dihedral_angle(translated_dim[26],translated_dim[30],translated_dim[37],translated_dim[40]))
+    print(translated_dim[30])
+    print(COangle)
+    #print(magnitude(CO))
+    z_CO=np.degrees(np.arccos((costheta(CO2,mon_0_new_long_axis))))
+    #print(z_CO)
+
+    #aligned_dim=align_z(dim,mon_0_extreme_coords[0],mon_0_extreme_coords[1])
+
+    #mon_0_new_long_axis=translated_dim[mon_0_extreme_atoms[1]]-translated_dim[mon_0_extreme_atoms[0]]
+    #print(np.degrees(costheta(mon_0_new_long_axis,(1,0,0))))
+    ###
+    # dimer angle (pyr)
+    cvec=translated_dim[37]-mon_0_new_long_axis[0]
+    dvec=translated_dim[37]-mon_0_new_long_axis[1]
+    pyr_angle=np.degrees(np.arccos(np.dot(np.cross(cvec,dvec),CO1)/np.dot(magnitude(np.cross(cvec,dvec)),magnitude(CO1))))
+    ###
+
+
+    ###
+    #print(mon_1_snapped[mon_1_extreme_atoms[0]])
+    #snapped_dim=np.concatenate((mon_0,mon_1_snapped))
     for i ,j in enumerate(dimer):
-        j.x,j.y,j.z=snapped_dim[i]
-    ef.write_xyz("{}_translated.xyz".format(argv[1][:-4]),dimer)
+        j.x,j.y,j.z=aligned_dim[i]
+    ef.write_xyz("{}_aligned.xyz".format(argv[1][:-4]),dimer)
     """
     for no,vector in enumerate(extreme_vectors):
         #print(magnitude(vector))
