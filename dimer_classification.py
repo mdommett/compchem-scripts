@@ -19,12 +19,15 @@ def centroid(coordinates):
     length = coordinates.shape[0]
     sum_x = np.sum(coordinates[:, 0])
     sum_y = np.sum(coordinates[:, 1])
-    sum_y = np.sum(coordinates[:, 2])
-    return np.array([sum_x/length, sum_y/length, sum_y/length])
+    sum_z = np.sum(coordinates[:, 2])
+    return np.array([sum_x/length, sum_y/length, sum_z/length])
 
 def long_axis(distance_matrix):
     # Gets the maximum argument, which is a flattened index, and gives it back as a 2d index
     return np.array(np.unravel_index(np.argmax(distance_matrix, axis=None), distance_matrix.shape))
+
+def distance(pointa,pointb):
+    return np.sqrt(np.sum([(b-a)**2 for a,b in zip(point1,point2)]))
 
 def rotation_matrix(axis, theta):
 
@@ -158,16 +161,26 @@ def detect_nearest_element_distance(distance_matrix,ref_atom_index):
     return np.min(distance_matrix[ref_atom_index,:][np.nonzero(distance_matrix[ref_atom_index,:])])
 
 def detect_CO_indexes(atoms,distance_matrix):
+    """
+    finds the indexes of the C and O of the hydroxyl group
+    """
+    # Find the oxgyen inddices
     oxygen_indices=detect_element_indices(atoms,'O')
+    # Elements closet to oxygen
     oxygen_closest_distances=[detect_nearest_element_distance(distance_matrix,i) for i in oxygen_indices]
-
+    # Find which oxygen is the C-O-H oxygen by checking if H is the nearest element to O
     for indice_index,distance in enumerate(oxygen_closest_distances):
         closest_atom_index=int(np.where(distance_matrix[oxygen_indices[indice_index],:]==distance)[0])
         closest_atom=atoms[closest_atom_index].elem
-        if closest_atom=="C":
-            C=closest_atom_index
+        if closest_atom=="H":
+            #C=closest_atom_index
             O=oxygen_indices[indice_index]
-            return C,O
+    # Find C index by getting the second smallest distance value for COH (C-O) and placing it
+    # at the third position (remember that zeros are included in distance)
+    CO_distance=np.partition(distance_matrix[O,:],2)[2]
+    # Get C index
+    C=int(np.where(distance_matrix[O,:]==CO_distance)[0])
+    return C,O
 
 def detect_specific_nearest_element(distance_matrix,ref_atom_index,atom_indexes):
     distances=[distance_matrix[ref_atom_index,atom_index] for atom_index in atom_indexes]
@@ -205,7 +218,9 @@ if __name__=='__main__':
     mon_1_CO_axis=mon_1[mon_1_O]-mon_1[mon_1_C]
     #print(dihedral_angle(mon_0[mon_0_C],mon_0[mon_0_O],mon_1[mon_1_C],mon_1[mon_1_O]))
     #print(np.degrees(np.arccos(costheta(mon_0_CO_axis,mon_0_long_axis))))
+    long_axis_angle=np.degrees(np.arccos(costheta(mon_0_CO_axis,mon_1_long_axis)))
     CO_angle=np.degrees(np.arccos(costheta(mon_0_CO_axis,mon_1_CO_axis)))
+    CO_long_axis_angle=np.degrees(np.arccos(costheta(mon_0_CO_axis,mon_1_long_axis)))
     #print(np.degrees(np.arccos(costheta(mon_0_CO_axis,mon_1_long_axis))))
     #print(np.degrees(np.arccos(costheta(mon_0_long_axis,mon_1_long_axis))))
 
@@ -220,18 +235,19 @@ if __name__=='__main__':
     aligned_dim=align_z(dim,mon_0_extreme_coords[0],mon_0_extreme_coords[1])
     aligned_mon_0=aligned_dim[:natoms_monomer]
     aligned_mon_1=aligned_dim[natoms_monomer:]
-    mon_0_centroid=centroid(aligned_mon_0)
-    mon_1_centroid=centroid(aligned_mon_1)
-    z_slip=mon_1_centroid[2]-mon_0_centroid[2]
+    mon_0_centroid=centroid(mon_0)
+    mon_1_centroid=centroid(mon_1)
+    centroid_z_slip=mon_1_centroid[2]-mon_0_centroid[2]
+    centroid_distance=np.linalg.norm((mon_1_centroid-mon_0_centroid))
     mon_z_length=abs(aligned_mon_0[mon_0_extreme_atoms[0]][2]-aligned_mon_0[mon_0_extreme_atoms[1]][2])
-    z_slip_norm=z_slip/mon_z_length
+    centroid_z_slip_norm=centroid_z_slip/mon_z_length
     CO_slip=aligned_mon_1[mon_1_extreme_atoms[0]][2]-aligned_mon_0[mon_0_extreme_atoms[0]][2]
     CO_N_slip=aligned_mon_1[mon_1_extreme_atoms[0]][2]-aligned_mon_0[mon_0_extreme_atoms[1]][2]
     N_slip=aligned_mon_1[mon_1_extreme_atoms[1]][2]-aligned_mon_0[mon_0_extreme_atoms[1]][2]
     CO_slip_norm=CO_slip/mon_z_length
     CO_N_slip_norm=CO_N_slip/abs(aligned_mon_0[mon_0_extreme_atoms[0]][2]-aligned_mon_0[mon_0_extreme_atoms[1]][2])
     N_slip_norm=N_slip/abs(aligned_mon_0[mon_0_extreme_atoms[0]][2]-aligned_mon_0[mon_0_extreme_atoms[1]][2])
-    print("{0:>7.3f} {1:>7.3f} {2:>7.3f} {3:>7.3f} {4:>7.3f} {5:>7.3f}".format(CO_slip,CO_N_slip,N_slip,z_slip,CO_angle,mon_z_length))
+    print("{0:>7.3f} {1:>7.3f} {2:>7.3f} {3:>7.3f} {4:>7.3f} {5:>7.3f} {6:>7.3f} {7:>7.3f} {8:>7.3f}".format(CO_slip,CO_N_slip,N_slip,centroid_distance,centroid_z_slip,long_axis_angle,CO_angle,CO_long_axis_angle,mon_z_length))
 
     #mon_0_new_long_axis=snapped_and_aligned_dim[mon_0_extreme_atoms[1]]-snapped_and_aligned_dim[mon_0_extreme_atoms[0]]
     #mon_1_new_long_axis=snapped_and_aligned_dim[mon_1_extreme_atoms[1]]-snapped_and_aligned_dim[mon_1_extreme_atoms[0]]
