@@ -217,8 +217,8 @@ if __name__=='__main__':
     translated_dim=translate(dim,mon_0_extreme_coords[0])
     """
 
-    # Align long axis of mon_0 along z-axis, so that z-axis slip can easily be
-    # identified
+    # Align long axis of mon_0 along z-axis, so that z-axis slip  and centroid z-slip
+    #can easily be identified
 
     aligned_dim=align_z(dim,mon_0_extreme_coords[0],mon_0_extreme_coords[1])
     aligned_mon_0=aligned_dim[:natoms_monomer]
