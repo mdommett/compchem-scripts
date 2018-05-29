@@ -4,7 +4,9 @@ from sys import argv
 import numpy as np
 import edit_file as ef
 from sklearn.metrics.pairwise import pairwise_distances
-#np.seterr(divide='ignore', invalid='ignore') # divide by zero
+
+# usage
+# dimer_classification.py dimer.xyz
 
 
 def coordinate_matrix(atoms):
@@ -29,43 +31,6 @@ def long_axis(distance_matrix):
 def distance(pointa,pointb):
     return np.sqrt(np.sum([(b-a)**2 for a,b in zip(point1,point2)]))
 
-def rotation_matrix(axis, theta):
-
-    """Return the rotation matrix associated with counterclockwise rotation about
-    the given axis by theta radians."""
-
-    axis = np.asarray(axis)
-    axis = axis/np.sqrt(np.dot(axis, axis))
-
-    a = np.cos(theta/2.0)
-    b, c, d = -axis*np.sin(theta/2.0)
-    aa, bb, cc, dd = a*a, b*b, c*c, d*d
-    bc, ad, ac, ab, bd, cd = b*c, a*d, a*c, a*b, b*d, c*d
-    return np.array([[aa+bb-cc-dd, 2*(bc+ad), 2*(bd-ac)],
-                     [2*(bc-ad), aa+cc-bb-dd, 2*(cd+ab)],
-                     [2*(bd+ac), 2*(cd-ab), aa+dd-bb-cc]])
-
-def rotate_x(v,theta):
-    rot=np.array([[1,0,0],
-                [0,np.cos(theta),-np.sin(theta)],
-                [0,np.sin(theta),np.cos(theta)]])
-    return np.dot(rot,v)
-
-def rotate(axis,theta):
-    axis = axis/np.sqrt(np.dot(axis, axis))
-    a11=np.cos(theta)+(axis[0]**2*(1-np.cos(theta)))
-    a12=axis[0]*axis[1]*(1-np.cos(theta))-axis[2]*np.sin(theta)
-    a13=axis[0]*axis[2]*(1-np.cos(theta))+axis[1]*np.sin(theta)
-    a21=axis[1]*axis[0]*(1-np.cos(theta))+axis[2]*np.sin(theta)
-    a22=np.cos(theta)+(axis[1]**2*(1-np.cos(theta)))
-    a23=(axis[1]*axis[2]*(1-np.cos(theta)))-axis[0]*np.sin(theta)
-    a31=(axis[2]*axis[0]*(1-np.cos(theta)))-axis[1]*np.sin(theta)
-    a32=(axis[2]*axis[1]*(1-np.cos(theta)))+axis[0]*np.sin(theta)
-    a33=np.cos(theta)+(axis[2]**2*(1-np.cos(theta)))
-    R=np.array([[a11,a12,a13],
-                [a21,a22,a23],
-                [a31,a32,a33]])
-    return R
 
 def align_z(coordinates,point1,point2):
     """first need to move a point to the origin
@@ -190,54 +155,81 @@ def detect_specific_nearest_element(distance_matrix,ref_atom_index,atom_indexes)
 
 if __name__=='__main__':
 
+    # load the dimer xyz coordinates
     dimer=rf.read_pos(argv[1])
     natoms_dimer=len(dimer)
     natoms_monomer=natoms_dimer/2
+    # dimer must be arranged in sequence of monomers in xyz
     monomer_0=dimer[:natoms_monomer]
     monomer_1=dimer[natoms_monomer:]
 
+    # get coordinates of each atom for each monomer
     mon_0=coordinate_matrix(dimer[0:natoms_monomer])
     mon_1=coordinate_matrix(dimer[natoms_monomer:])
+    # get dimer coordinates
     dim=np.concatenate((mon_0,mon_1),axis=0)
 
+    # distance matrices for each monomer
     mon_0_distances=pairwise_distances(mon_0)
     mon_1_distances=pairwise_distances(mon_1)
+
+    # Get the atom indices of the C and O of the hydroxyl group
+    # these are ordered by atom number
     mon_0_C,mon_0_O=(detect_CO_indexes(monomer_0,mon_0_distances))
     mon_1_C,mon_1_O=(detect_CO_indexes(monomer_1,mon_1_distances))
 
+    # get the extreme atoms for each monomer, ordered by atom number
     mon_0_extreme_atoms_ordered=long_axis(mon_0_distances)
-    mon_0_extreme_atoms=detect_specific_nearest_element(mon_0_distances,mon_0_C,mon_0_extreme_atoms_ordered)
     mon_1_extreme_atoms_ordered=long_axis(mon_1_distances)#+natoms_monomer # back to index of original dimer
+
+    # reorder these so that the first extreme atom is always closest to the carbonyl and the second is always
+    # furthest from carbonyl
+    mon_0_extreme_atoms=detect_specific_nearest_element(mon_0_distances,mon_0_C,mon_0_extreme_atoms_ordered)
     mon_1_extreme_atoms=detect_specific_nearest_element(mon_1_distances,mon_1_C,mon_1_extreme_atoms_ordered)
+
+    # get the coordinates of each extreme atom index
     mon_0_extreme_coords=np.array([mon_0[mon_0_extreme_atoms[0]],mon_0[mon_0_extreme_atoms[1]]])
     mon_1_extreme_coords=np.array([mon_1[mon_1_extreme_atoms[0]],mon_1[mon_1_extreme_atoms[1]]])
 
+    # define the long axis vector for each monomer
     mon_0_long_axis=mon_0_extreme_coords[1]-mon_0_extreme_coords[0]
-    mon_0_CO_axis=mon_0[mon_0_O]-mon_0[mon_0_C]
     mon_1_long_axis=mon_1_extreme_coords[1]-mon_1_extreme_coords[0]
+
+    # define the short axis vector for each monomer
+    mon_0_CO_axis=mon_0[mon_0_O]-mon_0[mon_0_C]
     mon_1_CO_axis=mon_1[mon_1_O]-mon_1[mon_1_C]
-    #print(dihedral_angle(mon_0[mon_0_C],mon_0[mon_0_O],mon_1[mon_1_C],mon_1[mon_1_O]))
-    #print(np.degrees(np.arccos(costheta(mon_0_CO_axis,mon_0_long_axis))))
-    long_axis_angle=np.degrees(np.arccos(costheta(mon_0_CO_axis,mon_1_long_axis)))
+
+    # calculate the long axis angle
+    long_axis_angle=np.degrees(np.arccos(costheta(mon_0_long_axis,mon_1_long_axis)))
+    # calculate the short axis angle
     CO_angle=np.degrees(np.arccos(costheta(mon_0_CO_axis,mon_1_CO_axis)))
+    # calculate the angle between long and short (not used in analysis)
     CO_long_axis_angle=np.degrees(np.arccos(costheta(mon_0_CO_axis,mon_1_long_axis)))
     #print(np.degrees(np.arccos(costheta(mon_0_CO_axis,mon_1_long_axis))))
-    #print(np.degrees(np.arccos(costheta(mon_0_long_axis,mon_1_long_axis))))
-
-    #print(dihedral_angle(mon_0[mon_0_extremes[0]],mon_0[mon_0_extremes[1]],mon_1[mon_1_extremes[0]],mon_1[mon_1_extremes[1]]))
-
-
+    """
+    ## DISTANCE ANALYSIS NOT USED/NEEDED CURRENTLY##
+    # snap vector aligns the long axes of each monomer
     snap_vector=get_snap_vector(mon_0_extreme_coords,mon_1_extreme_coords)
     magnitude_snap_vector=magnitude(snap_vector)
+    # align vectors
     mon_1_snapped=mon_1-snap_vector
     snapped_dim=np.concatenate((mon_0,mon_1_snapped))
     translated_dim=translate(dim,mon_0_extreme_coords[0])
+    """
+
+    # Align long axis of mon_0 along z-axis, so that z-axis slip can easily be
+    # identified
+
     aligned_dim=align_z(dim,mon_0_extreme_coords[0],mon_0_extreme_coords[1])
     aligned_mon_0=aligned_dim[:natoms_monomer]
     aligned_mon_1=aligned_dim[natoms_monomer:]
-    mon_0_centroid=centroid(mon_0)
-    mon_1_centroid=centroid(mon_1)
+
+
+    mon_0_centroid=centroid(aligned_mon_0)
+    mon_1_centroid=centroid(aligned_mon_1)
+    # z-slip of centroid
     centroid_z_slip=mon_1_centroid[2]-mon_0_centroid[2]
+    # centroid distance
     centroid_distance=np.linalg.norm((mon_1_centroid-mon_0_centroid))
     mon_z_length=abs(aligned_mon_0[mon_0_extreme_atoms[0]][2]-aligned_mon_0[mon_0_extreme_atoms[1]][2])
     centroid_z_slip_norm=centroid_z_slip/mon_z_length
@@ -248,49 +240,3 @@ if __name__=='__main__':
     CO_N_slip_norm=CO_N_slip/abs(aligned_mon_0[mon_0_extreme_atoms[0]][2]-aligned_mon_0[mon_0_extreme_atoms[1]][2])
     N_slip_norm=N_slip/abs(aligned_mon_0[mon_0_extreme_atoms[0]][2]-aligned_mon_0[mon_0_extreme_atoms[1]][2])
     print("{0:>7.3f} {1:>7.3f} {2:>7.3f} {3:>7.3f} {4:>7.3f} {5:>7.3f} {6:>7.3f} {7:>7.3f} {8:>7.3f}".format(CO_slip,CO_N_slip,N_slip,centroid_distance,centroid_z_slip,long_axis_angle,CO_angle,CO_long_axis_angle,mon_z_length))
-
-    #mon_0_new_long_axis=snapped_and_aligned_dim[mon_0_extreme_atoms[1]]-snapped_and_aligned_dim[mon_0_extreme_atoms[0]]
-    #mon_1_new_long_axis=snapped_and_aligned_dim[mon_1_extreme_atoms[1]]-snapped_and_aligned_dim[mon_1_extreme_atoms[0]]
-    #COangle=np.degrees(np.arccos(costheta(CO1,CO2)))
-"""
-    for i ,j in enumerate(dimer):
-        j.x,j.y,j.z=snapped_and_aligned_dim[i]
-    ef.write_xyz("{}_snapped_and_aligned.xyz".format(argv[1][:-4]),dimer)
-    for i ,j in enumerate(dimer):
-        j.x,j.y,j.z=aligned_dim[i]
-    ef.write_xyz("{}_aligned.xyz".format(argv[1][:-4]),dimer)
-
-    #print(z_CO)
-
-    #aligned_dim=align_z(dim,mon_0_extreme_coords[0],mon_0_extreme_coords[1])
-
-    #mon_0_new_long_axis=translated_dim[mon_0_extreme_atoms[1]]-translated_dim[mon_0_extreme_atoms[0]]
-    #print(np.degrees(costheta(mon_0_new_long_axis,(1,0,0))))
-    ###
-    # dimer angle (pyr)
-    cvec=translated_dim[37]-mon_0_new_long_axis[0]
-    dvec=translated_dim[37]-mon_0_new_long_axis[1]
-    pyr_angle=np.degrees(np.arccos(np.dot(np.cross(cvec,dvec),CO1)/np.dot(magnitude(np.cross(cvec,dvec)),magnitude(CO1))))
-    ###
-
-
-    ###
-    #print(mon_1_snapped[mon_1_extreme_atoms[0]])
-    #snapped_dim=np.concatenate((mon_0,mon_1_snapped))
-    for i ,j in enumerate(dimer):
-        j.x,j.y,j.z=aligned_dim[i]
-    ef.write_xyz("{}_aligned.xyz".format(argv[1][:-4]),dimer)
-
-    for no,vector in enumerate(extreme_vectors):
-        #print(magnitude(vector))
-        #theta = np.radians(angle)
-        #rotated=np.array([np.dot(rotate(np.array([0,0,1]),theta), i) for i in new_coords])
-        mon_1_snapped=mon_1-vector
-        print(np.mean(pairwise_distances(mon_0,mon_1_snapped)))
-        snapped_dim=np.concatenate((mon_0,mon_1_snapped))
-        #print(distance(snapped_dim[19],snapped_dim[7]))
-        #translated_dim=align_z(snapped_dim,mon_0_extreme_coords[0],mon_0_extreme_coords[1])
-        for i,j in enumerate(dimer):
-            j.x,j.y,j.z=snapped_dim[i]
-        ef.write_xyz("{}.xyz".format(no),dimer)
-        """
