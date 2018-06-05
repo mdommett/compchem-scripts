@@ -62,6 +62,31 @@ def align_z(coordinates,point1,point2):
     new_coords=np.array([np.dot(i,rmat) for i in translated])
     return new_coords
 
+def align_to_vector(coordinates,vector,ref_vector):
+    """first need to move a point to the origin
+    then rotate into XZ plane
+    """
+
+    unit_vector=vector/np.sqrt(np.dot(vector, vector))
+
+    # cos(theta) of angle to between current vector and ref-vector
+    c=costheta(ref_vector,vector)
+    rot_angle=(np.arccos(c))
+
+    #  rotation axis that connects vector and z-axis
+    rot_axis=np.cross(ref_vector,vector)/magnitude(np.cross(ref_vector,vector))
+    x,y,z=rot_axis
+    C=1-c
+
+    s=np.sin(rot_angle)
+    # https://en.wikipedia.org/wiki/Rotation_matrix#Axis_and_angle
+    # rotation matrix :
+    rmat = np.array([[x*x*C+c,x*y*C-z*s,x*z*C+y*s],
+                    [y*x*C+z*s,y*y*C+c,y*z*C-x*s],
+                    [z*x*C-y*s,z*y*C+x*s,z*z*C+c]])
+    new_coords=np.array([np.dot(i,rmat) for i in coordinates])
+    return new_coords
+
 def translate(coordinates,point):
     return coordinates-point
 
@@ -153,6 +178,7 @@ def detect_specific_nearest_element(distance_matrix,ref_atom_index,atom_indexes)
     other_index=np.argmax(distances)
     return atom_indexes[nearest_index],atom_indexes[other_index]
 
+
 if __name__=='__main__':
 
     # load the dimer xyz coordinates
@@ -177,7 +203,9 @@ if __name__=='__main__':
     # these are ordered by atom number
     mon_0_C,mon_0_O=(detect_CO_indexes(monomer_0,mon_0_distances))
     mon_1_C,mon_1_O=(detect_CO_indexes(monomer_1,mon_1_distances))
-
+    mon_0_C_ab_distances=np.partition(mon_0_distances[mon_0_C],[2,3])[[2,3]]
+    mon_0_C_a,mon_0_C_b=[int(np.where(mon_0_distances[mon_0_C]==distance)[0]) for distance in mon_0_C_ab_distances]
+    mon_0_C_axis=mon_0[mon_0_C_b]-mon_0[mon_0_C_a]
     # get the extreme atoms for each monomer, ordered by atom number
     mon_0_extreme_atoms_ordered=long_axis(mon_0_distances)
     mon_1_extreme_atoms_ordered=long_axis(mon_1_distances)#+natoms_monomer # back to index of original dimer
@@ -206,6 +234,21 @@ if __name__=='__main__':
     # calculate the angle between long and short (not used in analysis)
     CO_long_axis_angle=np.degrees(np.arccos(costheta(mon_0_CO_axis,mon_1_long_axis)))
     #print(np.degrees(np.arccos(costheta(mon_0_CO_axis,mon_1_long_axis))))
+
+    aligned_dim=align_z(dim,mon_0[mon_0_C],mon_0[mon_0_O])
+    aligned_mon_0=aligned_dim[:natoms_monomer]
+    aligned_mon_1=aligned_dim[natoms_monomer:]
+    mon_0_C_axis=aligned_mon_0[mon_0_C_b]-aligned_mon_0[mon_0_C_a]
+    mon_0_CO_axis=aligned_mon_0[mon_0_O]-aligned_mon_0[mon_0_C]
+    mon_0_perpendicular_axis=np.cross(mon_0_C_axis,mon_0_CO_axis)
+    aligned_dim=align_to_vector(aligned_dim,mon_0_C_axis,np.array([0,1,0]))
+    aligned_mon_0=aligned_dim[:natoms_monomer]
+    aligned_mon_1=aligned_dim[natoms_monomer:]
+    mon_0_C_axis=aligned_mon_0[mon_0_C_b]-aligned_mon_0[mon_0_C_a]
+    mon_0_CO_axis=aligned_mon_0[mon_0_O]-aligned_mon_0[mon_0_C]
+    print(np.degrees(np.arccos(costheta(np.array([1,0,0]),aligned_mon_1[mon_1_C]-aligned_mon_0[mon_0_C]))))
+    perp_vector=np.cross(mon_0_C_axis,mon_0_CO_axis)
+    print(np.degrees(np.arccos(costheta(perp_vector,aligned_mon_1[mon_1_C]-aligned_mon_0[mon_0_C]))))
     """
     ## DISTANCE ANALYSIS NOT USED/NEEDED CURRENTLY##
     # snap vector aligns the long axes of each monomer
@@ -239,4 +282,4 @@ if __name__=='__main__':
     CO_slip_norm=CO_slip/mon_z_length
     CO_N_slip_norm=CO_N_slip/abs(aligned_mon_0[mon_0_extreme_atoms[0]][2]-aligned_mon_0[mon_0_extreme_atoms[1]][2])
     N_slip_norm=N_slip/abs(aligned_mon_0[mon_0_extreme_atoms[0]][2]-aligned_mon_0[mon_0_extreme_atoms[1]][2])
-    print("{0:>7.3f} {1:>7.3f} {2:>7.3f} {3:>7.3f} {4:>7.3f} {5:>7.3f} {6:>7.3f} {7:>7.3f} {8:>7.3f}".format(CO_slip,CO_N_slip,N_slip,centroid_distance,centroid_z_slip,long_axis_angle,CO_angle,CO_long_axis_angle,mon_z_length))
+    #print("{0:>7.3f} {1:>7.3f} {2:>7.3f} {3:>7.3f} {4:>7.3f} {5:>7.3f} {6:>7.3f} {7:>7.3f} {8:>7.3f}".format(CO_slip,CO_N_slip,N_slip,centroid_distance,centroid_z_slip,long_axis_angle,CO_angle,CO_long_axis_angle,mon_z_length))
