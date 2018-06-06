@@ -204,8 +204,11 @@ if __name__=='__main__':
     mon_0_C,mon_0_O=(detect_CO_indexes(monomer_0,mon_0_distances))
     mon_1_C,mon_1_O=(detect_CO_indexes(monomer_1,mon_1_distances))
     mon_0_C_ab_distances=np.partition(mon_0_distances[mon_0_C],[2,3])[[2,3]]
+    mon_1_C_ab_distances=np.partition(mon_1_distances[mon_1_C],[2,3])[[2,3]]
     mon_0_C_a,mon_0_C_b=[int(np.where(mon_0_distances[mon_0_C]==distance)[0]) for distance in mon_0_C_ab_distances]
+    mon_1_C_a,mon_1_C_b=[int(np.where(mon_1_distances[mon_1_C]==distance)[0]) for distance in mon_1_C_ab_distances]
     mon_0_C_axis=mon_0[mon_0_C_b]-mon_0[mon_0_C_a]
+    mon_1_C_axis=mon_1[mon_1_C_b]-mon_1[mon_1_C_a]
     # get the extreme atoms for each monomer, ordered by atom number
     mon_0_extreme_atoms_ordered=long_axis(mon_0_distances)
     mon_1_extreme_atoms_ordered=long_axis(mon_1_distances)#+natoms_monomer # back to index of original dimer
@@ -229,26 +232,45 @@ if __name__=='__main__':
 
     # calculate the long axis angle
     long_axis_angle=np.degrees(np.arccos(costheta(mon_0_long_axis,mon_1_long_axis)))
+
     # calculate the short axis angle
     CO_angle=np.degrees(np.arccos(costheta(mon_0_CO_axis,mon_1_CO_axis)))
     # calculate the angle between long and short (not used in analysis)
     CO_long_axis_angle=np.degrees(np.arccos(costheta(mon_0_CO_axis,mon_1_long_axis)))
     #print(np.degrees(np.arccos(costheta(mon_0_CO_axis,mon_1_long_axis))))
 
+    # align to CO to Z-axis
     aligned_dim=align_z(dim,mon_0[mon_0_C],mon_0[mon_0_O])
     aligned_mon_0=aligned_dim[:natoms_monomer]
     aligned_mon_1=aligned_dim[natoms_monomer:]
     mon_0_C_axis=aligned_mon_0[mon_0_C_b]-aligned_mon_0[mon_0_C_a]
     mon_0_CO_axis=aligned_mon_0[mon_0_O]-aligned_mon_0[mon_0_C]
     mon_0_perpendicular_axis=np.cross(mon_0_C_axis,mon_0_CO_axis)
+    # align to C axis to Y-axis
     aligned_dim=align_to_vector(aligned_dim,mon_0_C_axis,np.array([0,1,0]))
     aligned_mon_0=aligned_dim[:natoms_monomer]
     aligned_mon_1=aligned_dim[natoms_monomer:]
+
     mon_0_C_axis=aligned_mon_0[mon_0_C_b]-aligned_mon_0[mon_0_C_a]
+    mon_1_C_axis=aligned_mon_1[mon_1_C_b]-aligned_mon_1[mon_1_C_a]
+    C_axis_angle=np.degrees(np.arccos(costheta(mon_0_C_axis,mon_1_C_axis)))
+
     mon_0_CO_axis=aligned_mon_0[mon_0_O]-aligned_mon_0[mon_0_C]
-    print(np.degrees(np.arccos(costheta(np.array([1,0,0]),aligned_mon_1[mon_1_C]-aligned_mon_0[mon_0_C]))))
+    mon_1_CO_axis=aligned_mon_1[mon_1_O]-aligned_mon_1[mon_1_C]
+    CO_angle=np.degrees(np.arccos(costheta(mon_0_CO_axis,mon_1_CO_axis)))
     perp_vector=np.cross(mon_0_C_axis,mon_0_CO_axis)
-    print(np.degrees(np.arccos(costheta(perp_vector,aligned_mon_1[mon_1_C]-aligned_mon_0[mon_0_C]))))
+
+    slip_angle=np.degrees(np.arccos(costheta(perp_vector,aligned_mon_1[mon_1_C]-aligned_mon_0[mon_0_C])))
+
+    mon_0_centroid=centroid(aligned_mon_0)
+    mon_1_centroid=centroid(aligned_mon_1)
+    slip_angle_centroid=np.degrees(np.arccos(costheta(perp_vector,mon_1_centroid-aligned_mon_0[mon_0_C])))
+
+    print("{0:>7.3f} {1:>7.3f} {2:>7.3f} {3:>7.3f}".format(C_axis_angle,CO_angle,slip_angle,slip_angle_centroid))
+    for i,j in enumerate(dimer):
+        j.x,j.y,j.z=aligned_dim[i]
+    ef.write_xyz("{}_aligned.xyz".format(argv[1][:-4]),dimer)
+    ############################################################################################
     """
     ## DISTANCE ANALYSIS NOT USED/NEEDED CURRENTLY##
     # snap vector aligns the long axes of each monomer
@@ -258,7 +280,7 @@ if __name__=='__main__':
     mon_1_snapped=mon_1-snap_vector
     snapped_dim=np.concatenate((mon_0,mon_1_snapped))
     translated_dim=translate(dim,mon_0_extreme_coords[0])
-    """
+
 
     # Align long axis of mon_0 along z-axis, so that z-axis slip  and centroid z-slip
     #can easily be identified
@@ -283,3 +305,4 @@ if __name__=='__main__':
     CO_N_slip_norm=CO_N_slip/abs(aligned_mon_0[mon_0_extreme_atoms[0]][2]-aligned_mon_0[mon_0_extreme_atoms[1]][2])
     N_slip_norm=N_slip/abs(aligned_mon_0[mon_0_extreme_atoms[0]][2]-aligned_mon_0[mon_0_extreme_atoms[1]][2])
     #print("{0:>7.3f} {1:>7.3f} {2:>7.3f} {3:>7.3f} {4:>7.3f} {5:>7.3f} {6:>7.3f} {7:>7.3f} {8:>7.3f}".format(CO_slip,CO_N_slip,N_slip,centroid_distance,centroid_z_slip,long_axis_angle,CO_angle,CO_long_axis_angle,mon_z_length))
+    """
