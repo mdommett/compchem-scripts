@@ -261,11 +261,13 @@ if __name__=='__main__':
     perp_vector=np.cross(mon_0_C_axis,mon_0_CO_axis)
 
     slip_angle=np.degrees(np.arccos(costheta(perp_vector,aligned_mon_1[mon_1_C]-aligned_mon_0[mon_0_C])))
-
     mon_0_centroid=centroid(aligned_mon_0)
     mon_1_centroid=centroid(aligned_mon_1)
     slip_angle_centroid=np.degrees(np.arccos(costheta(perp_vector,mon_1_centroid-aligned_mon_0[mon_0_C])))
-
+    if slip_angle >90:
+        slip_angle=180-slip_angle
+    if slip_angle_centroid >90:
+        slip_angle_centroid=180-slip_angle_centroid
     print("{0:>7.3f} {1:>7.3f} {2:>7.3f} {3:>7.3f}".format(C_axis_angle,CO_angle,slip_angle,slip_angle_centroid))
     for i,j in enumerate(dimer):
         j.x,j.y,j.z=aligned_dim[i]
