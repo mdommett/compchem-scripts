@@ -263,9 +263,13 @@ if __name__=='__main__':
     slip_angle=np.degrees(np.arccos(costheta(perp_vector,aligned_mon_1[mon_1_C]-aligned_mon_0[mon_0_C])))
     mon_0_centroid=centroid(aligned_mon_0)
     mon_1_centroid=centroid(aligned_mon_1)
+    print(mon_0_centroid)
+    print(mon_1_centroid)
+    y_slip=abs(mon_1_centroid[1]-mon_0_centroid[1])
+    aligned_mon_0_long_axis=aligned_mon_0[mon_0_extreme_atoms[1]]-aligned_mon_0[mon_0_extreme_atoms[0]]
+    mon_0_y_length=abs(aligned_mon_0_long_axis[1])
     mon_0_centroid_axis=(mon_0_centroid+np.array([1,0,0]))-mon_0_centroid
     centroid_angle=np.degrees(np.arccos(costheta(mon_0_centroid_axis,mon_1_centroid-mon_0_centroid)))
-
     slip_angle_centroid=np.degrees(np.arccos(costheta(perp_vector,mon_1_centroid-aligned_mon_0[mon_0_C])))
     if slip_angle >90:
         slip_angle=180-slip_angle
@@ -273,10 +277,10 @@ if __name__=='__main__':
         slip_angle_centroid=180-slip_angle_centroid
     if centroid_angle >90:
         centroid_angle=180-centroid_angle
-    print("{0:>7.3f} {1:>7.3f} {2:>7.3f} {3:>7.3f} {4:>7.3f}".format(C_axis_angle,CO_angle,slip_angle,slip_angle_centroid,centroid_angle))
-    #for i,j in enumerate(dimer):
-    #    j.x,j.y,j.z=aligned_dim[i]
-    #ef.write_xyz("{}_aligned.xyz".format(argv[1][:-4]),dimer)
+    print("{0:>7.3f} {1:>7.3f} {2:>7.3f} {3:>7.3f} {4:>7.3f} {5:>7.3f} {6:>7.3f}".format(C_axis_angle,CO_angle,slip_angle,slip_angle_centroid,centroid_angle,y_slip,mon_0_y_length))
+    for i,j in enumerate(dimer):
+        j.x,j.y,j.z=aligned_dim[i]
+    ef.write_xyz("{}_aligned.xyz".format(argv[1][:-4]),dimer)
     ############################################################################################
     """
     ## DISTANCE ANALYSIS NOT USED/NEEDED CURRENTLY##
