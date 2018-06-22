@@ -52,6 +52,9 @@ Nlevels =  len(molecule)-1
 if natoms_inputxyz != natoms_molecule:
     print "There is a problem with the input xyz or the molecule file. The number of atoms don't match."
     sys.exit
+if Nlevels == 1:
+    H = rangeexpand(molecule[1])
+    print "{0} atoms in High Level, there {1} atoms in total.".format(len(H),natoms_molecule)
 
 if Nlevels == 2:
     H = rangeexpand(molecule[1])
@@ -75,9 +78,9 @@ outfile.write("{0}\n{1}\n{2}\n{3}\n\n Title \n\n0 1\n".format(chk,nproc,mem,inpu
 
 for i in H:
     outfile.write("{0:<2}  0 {1:>13.9f} {2:>13.9f} {3:>13.9f} H\n".format(symbol[i-1],x[i-1],y[i-1],z[i-1]))
-
-for i in M:
-    outfile.write("{0:<2} -1 {1:>13.9f} {2:>13.9f} {3:>13.9f} M\n".format(symbol[i-1],x[i-1],y[i-1],z[i-1]))
+if Nlevels == 2:
+    for i in M:
+        outfile.write("{0:<2} -1 {1:>13.9f} {2:>13.9f} {3:>13.9f} M\n".format(symbol[i-1],x[i-1],y[i-1],z[i-1]))
 
 if Nlevels == 3:
     for i in L:
