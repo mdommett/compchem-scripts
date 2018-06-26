@@ -44,5 +44,5 @@ states.append(a)
 for i in range(1,ntriplets):
     states.append([j+i for j in a])
 for matrix in couplings:
-    printlist=[np.sum(matrix[singlet_coupling_state,state]) for state in states]
+    printlist=[np.linalg.norm(matrix[singlet_coupling_state,state]) for state in states]
     print(*printlist,sep = "    ")
