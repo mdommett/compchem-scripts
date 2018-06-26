@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 """
 script to parse sh.log file from SOC dynamics and extract the SOC values. Usage:
 python3 parse_sh_SOC.py nsinglets ntriplets singlet_coupling_state
@@ -18,7 +17,7 @@ triplet components are added up
 
 Michael Dommett
 26/6/2018
-""""
+"""
 
 import numpy as np
 from sys import argv,exit
