@@ -27,6 +27,12 @@ ntriplets=int(argv[3])
 singlet_coupling_state=int(argv[4])
 nstates=nsinglets+3*ntriplets
 couplings=[]
+a=[nsinglets,nsinglets+ntriplets,nsinglets+ntriplets+ntriplets]
+states=[]
+states.append(a)
+for i in range(1,ntriplets):
+    states.append([j+i for j in a])
+
 with open(argv[1]) as infile:
     for line in infile:
         if "#DEBUG# Couplings (cm-1) =" in line:
@@ -36,13 +42,5 @@ with open(argv[1]) as infile:
                 for j,x in enumerate(coupling_line):
                     a, b = x.strip('()').split(',')
                     coupling_matrix[i,j]=a
-
-            couplings.append(coupling_matrix)
-a=[nsinglets,nsinglets+ntriplets,nsinglets+ntriplets+ntriplets]
-states=[]
-states.append(a)
-for i in range(1,ntriplets):
-    states.append([j+i for j in a])
-for matrix in couplings:
-    printlist=[np.linalg.norm(matrix[singlet_coupling_state,state]) for state in states]
-    print(*printlist,sep = "    ")
+            printlist=[np.linalg.norm(coupling_matrix[singlet_coupling_state,state]) for state in states]
+            print(*printlist,sep = "    ")
