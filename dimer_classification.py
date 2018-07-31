@@ -263,8 +263,6 @@ if __name__=='__main__':
     slip_angle=np.degrees(np.arccos(costheta(perp_vector,aligned_mon_1[mon_1_C]-aligned_mon_0[mon_0_C])))
     mon_0_centroid=centroid(aligned_mon_0)
     mon_1_centroid=centroid(aligned_mon_1)
-    print(mon_0_centroid)
-    print(mon_1_centroid)
     y_slip=abs(mon_1_centroid[1]-mon_0_centroid[1])
     aligned_mon_0_long_axis=aligned_mon_0[mon_0_extreme_atoms[1]]-aligned_mon_0[mon_0_extreme_atoms[0]]
     mon_0_y_length=abs(aligned_mon_0_long_axis[1])
