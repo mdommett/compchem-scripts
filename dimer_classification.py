@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-import read_file as rf
+from cryspy.io import read_file as rf
 from sys import argv
 import numpy as np
-import edit_file as ef
+from cryspy.io import edit_file as ef
 from sklearn.metrics.pairwise import pairwise_distances
 
 # usage
