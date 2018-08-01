@@ -13,7 +13,7 @@ def coordinate_matrix(atoms):
     return coords
 
 def bond_length(A,B):
-    return numpy.linalg.norm(B-A)
+    return np.linalg.norm(B-A)
 
 if __name__=='__main__':
     geom_file=rf.read_pos(argv[1])
