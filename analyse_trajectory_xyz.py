@@ -3,7 +3,10 @@
 import numpy as np
 from sys import argv,exit
 import argparse
+import read_file as rf
 
+def magnitude(vector):
+    return np.linalg.norm(vector)
 def pyramidal_angle(geom,A,B,C,D):
     A=int(A)-1
     B=int(B)-1
@@ -29,3 +32,6 @@ if __name__ == "__main__":
     parser.add_argument("-p","--pyramidal",help="pyramidal angle between bond AB plane CD",
     nargs=4,type=list)
     parser.add_argument("input", help="Input files",type=str,nargs='*')
+    args = parser.parse_args(user_input)
+    
+    geoms=rf.read_xyz(input)
