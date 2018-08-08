@@ -45,4 +45,4 @@ if __name__=='__main__':
     D=geom[int(argv[5])-1]
 
     dihedral_angle=dihedral_angle(A,B,C,D)
-    print(dihedral_angle)
+    print("{:.3g}".format(dihedral_angle))
