@@ -21,4 +21,4 @@ if __name__=='__main__':
     A=geom[int(argv[2])-1]
     B=geom[int(argv[3])-1]
     bond_length=bond_length(A,B)
-    print(bond_length)
+    print("{:.3g}".format(bond_length))
