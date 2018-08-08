@@ -56,7 +56,6 @@ m.dommett@qmul.ac.uk
 """
 import numpy as np
 from sys import exit,argv
-from periodic import element
 import argparse
 
 
@@ -190,6 +189,7 @@ if __name__=='__main__':
             exit("Three input files must be specified for the TDM diabatization")
 
     elif args.property.upper()=="ATC":
+		from periodic import element
         if len(args.input)==5:
             dimer_s1=open(args.input[0],"r").read().splitlines()
             dimer_s2=open(args.input[1],"r").read().splitlines()
