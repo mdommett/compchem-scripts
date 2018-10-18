@@ -109,5 +109,5 @@ if __name__=='__main__':
     p=project_to_plane(a,b,c,d,ref)
     squared_distance=squared_distance_to_plane(a,b,c,d,ref)
     distance=np.sqrt(squared_distance)
-    print("MSE of fit:\n{:.2f}".format(mean_squared_error_of_plane))
-    print("Distance from best fitting basal plane:\n{:.2f}".format(distance))
+    print("MSE of fit:\n{:.3f}".format(mean_squared_error_of_plane))
+    print("Distance from best fitting basal plane:\n{:.3f}".format(distance))
