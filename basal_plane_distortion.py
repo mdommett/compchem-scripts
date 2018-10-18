@@ -2,6 +2,7 @@
 import numpy as np
 from sys import argv,exit
 from sklearn.metrics.pairwise import pairwise_distances
+import argparse
 
 def SVD(X):
     """
@@ -43,7 +44,7 @@ def file_to_matrix(infile):
 
     Parameters
     ----------
-    infile: list of N strings
+    infile: list of N lists
     Returns
     ----------
     xyz: Nx3 matrix
@@ -89,16 +90,24 @@ def squared_distance_to_plane(a,b,c,d,point):
     distance=np.mean(((a*x+b*y+c*z+d)**2/np.linalg.norm(N)))
     return distance
 
-infile=open(argv[1],'r').readlines()
-xyz=file_to_matrix(infile[2:])
-ref_no=int(argv[2])-1
-basal_no=[int(i)-1 for i in argv[3:7]]
-ref=xyz[ref_no,:]
-basal=xyz[basal_no,:]
-a,b,c,d=SVD(basal)
-mean_squared_error_of_plane=squared_distance_to_plane(a,b,c,d,basal)
-p=project_to_plane(a,b,c,d,ref)
-squared_distance=squared_distance_to_plane(a,b,c,d,ref)
-distance=np.sqrt(squared_distance)
-print("MSE of fit:\n{:.2f}".format(mean_squared_error_of_plane))
-print("Distance from best fitting basal plane:\n{:.2f}".format(distance))
+if __name__=='__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("input",help="XYZ file",type=str)
+    parser.add_argument("--ref","-r",help="Reference atom",type=int)
+    parser.add_argument("--basal","-b",help="Atoms to fit plane to", type=int, nargs='*')
+    user_input = argv[1:]
+    args = parser.parse_args(user_input)
+
+    infile=open(args.input,'r').readlines()
+    xyz=file_to_matrix(infile[2:])
+    ref_no=args.ref-1
+    basal_no=[int(i)-1 for i in args.basal]
+    ref=xyz[ref_no,:]
+    basal=xyz[basal_no,:]
+    a,b,c,d=SVD(basal)
+    mean_squared_error_of_plane=squared_distance_to_plane(a,b,c,d,basal)
+    p=project_to_plane(a,b,c,d,ref)
+    squared_distance=squared_distance_to_plane(a,b,c,d,ref)
+    distance=np.sqrt(squared_distance)
+    print("MSE of fit:\n{:.2f}".format(mean_squared_error_of_plane))
+    print("Distance from best fitting basal plane:\n{:.2f}".format(distance))
