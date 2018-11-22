@@ -330,7 +330,6 @@ for mol in list_of_molecules:
     find_connections(mol)
 dimers = dimers_centroid(list_of_molecules, 10)
 
-print(len(dimers))
 dictionaries=inter_distances_dictionary(dimers)
 
 unique_dims = [dimers[0]]
@@ -408,4 +407,4 @@ for index,(long_angle,short_angle,slip_angle) in enumerate(zip(long_axes_angles,
 
 
 end = time.time()
-print("\nTotal time: {}s".format(round((end - start), 1)))
+#print("\nTotal time: {}s".format(round((end - start), 1)))
