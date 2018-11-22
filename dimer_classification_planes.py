@@ -316,8 +316,9 @@ def slip_angle(centroid_1, centroid_2, centroid_perpendicular):
 
 
 #finding unique dimers
+
 read_file = argv[1]
-threshold = float(argv[2])
+#threshold = float(argv[2])
 in_file = open_check(read_file)
 
 clust = rf.mol_from_file(read_file)
@@ -348,10 +349,6 @@ for i, dimer_dictionary in enumerate(dictionaries[1:]):
     if unique:
         unique_dims.append(dimers[i + 1])
         unique_dictionaries.append([dimer_dictionary, 1])
-
-print(len(unique_dims))
-
-
 
 #Classifying Dimers
 
@@ -402,7 +399,7 @@ for dim_index,dimer in enumerate(distance_matrices):
 
 for index,(long_angle,short_angle,slip_angle) in enumerate(zip(long_axes_angles, short_axes_angles, slip_angles)):
     #print("Dimer {0:<5} Long:{1:<7.0f} Short:{2:<7.0f} Slip:{3:<7.0f}".format(index,long_angle,short_angle,slip_angle))
-    print("{0:<7.0f},{1:<7.0f}".format(long_angle, short_angle))
+    print("{0:<7.0f} {1:<7.0f} {2:<7.0f}".format(long_angle, short_angle,slip_angle))
 
 
 
