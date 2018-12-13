@@ -37,12 +37,13 @@ def magnitude(vector):
     return np.linalg.norm(vector)
 
 if __name__=='__main__':
-    geom_file=rf.read_pos(argv[1])
-    geom=coordinate_matrix(geom_file)
-    A=geom[int(argv[2])-1]
-    B=geom[int(argv[3])-1]
-    C=geom[int(argv[4])-1]
-    D=geom[int(argv[5])-1]
+    geom_file=rf.read_xyz(argv[1])
 
-    dihedral_angle=dihedral_angle(A,B,C,D)
-    print("{:.3g}".format(dihedral_angle))
+    for geometry in geom_file:
+        geom=coordinate_matrix(geometry)
+        A=geom[int(argv[2])-1]
+        B=geom[int(argv[3])-1]
+        C=geom[int(argv[4])-1]
+        D=geom[int(argv[5])-1]
+        angle=dihedral_angle(A,B,C,D)
+        print("{:.3g}".format(angle))
