@@ -46,9 +46,11 @@ def read_es(file):
 
 def abs_max(f,lam,ref):
     a=1.3062974e8
-    b=f/(1e7/3099.6)
+    b=f/(1e7/(1240/args.sd))
     c=np.exp(-(((1/ref-1/lam)/(1/(1240/args.sd)))**2))
     return a*b*c
+
+# note 1 eV ~ 1240 nm
 
 def gnu_plot(xaxis,yaxis):
     with open("data","w") as d:
